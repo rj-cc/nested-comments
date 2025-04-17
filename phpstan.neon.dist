@@ -10,10 +10,9 @@ parameters:
     tmpDir: build/phpstan
     checkOctaneCompatibility: true
     checkModelProperties: true
-    checkMissingIterableValueType: false
     fileExtensions:
-            - php
-            - php.stub
+        - php
+        - php.stub
     bootstrapFiles:
         - config/nested-comments.php
 
