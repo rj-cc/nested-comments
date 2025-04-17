@@ -37,5 +37,11 @@ jobs:
           branch: php-style-fixes
           title: Fix PHP Code Styling
           labels: code-style
-          auto-merge: true
           delete-branch: true
+
+      - name: Auto-merge Pull Request
+        uses: pascalgn/automerge-action@v0.16.4
+        with:
+          merge-method: squash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
