@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Coolsam\NestedComments\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class NestedCommentsCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'nested-comments';
 
     public $description = 'My command';
 
