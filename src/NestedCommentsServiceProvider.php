@@ -62,6 +62,7 @@ class NestedCommentsServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
+        $this->registerPolicies();
         // Asset Registration
         FilamentAsset::register(
             $this->getAssets(),
@@ -146,7 +147,24 @@ class NestedCommentsServiceProvider extends PackageServiceProvider
     protected function getMigrations(): array
     {
         return [
-            'create_nested-comments_table',
+            'create_nested_comments_table',
         ];
+    }
+
+    protected function registerPolicies(): void
+    {
+        $policies = config('nested-comments.policies');
+
+        // register policies
+        foreach ($policies as $model => $policy) {
+            if (! $policy) {
+                continue;
+            }
+            $modelClass = config("nested-comments.models.{$model}");
+            if (! $modelClass) {
+                continue;
+            }
+            \Gate::policy($modelClass, $policy);
+        }
     }
 }
