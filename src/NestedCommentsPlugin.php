@@ -1,15 +1,15 @@
 <?php
 
-namespace VendorName\Skeleton;
+namespace Coolsam\NestedComments;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 
-class SkeletonPlugin implements Plugin
+class NestedCommentsPlugin implements Plugin
 {
     public function getId(): string
     {
-        return 'skeleton';
+        return 'nested-comments';
     }
 
     public function register(Panel $panel): void
