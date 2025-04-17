@@ -3,6 +3,7 @@
 namespace Coolsam\NestedComments;
 
 use Coolsam\NestedComments\Commands\NestedCommentsCommand;
+use Coolsam\NestedComments\Http\Middleware\GuestCommentatorMiddleware;
 use Coolsam\NestedComments\Testing\TestsNestedComments;
 use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Asset;
@@ -21,6 +22,8 @@ class NestedCommentsServiceProvider extends PackageServiceProvider
     public static string $name = 'nested-comments';
 
     public static string $viewNamespace = 'nested-comments';
+
+
 
     public function configurePackage(Package $package): void
     {
@@ -59,6 +62,11 @@ class NestedCommentsServiceProvider extends PackageServiceProvider
     }
 
     public function packageRegistered(): void {}
+
+    public function bootingPackage(): void
+    {
+        $this->app['router']->pushMiddlewareToGroup('web', GuestCommentatorMiddleware::class);
+    }
 
     public function packageBooted(): void
     {

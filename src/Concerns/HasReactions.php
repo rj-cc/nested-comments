@@ -3,6 +3,7 @@
 namespace Coolsam\NestedComments\Concerns;
 
 use Coolsam\NestedComments\Models\Reaction;
+use Coolsam\NestedComments\NestedComments;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,7 +22,7 @@ trait HasReactions
     /**
      * @throws \Throwable
      */
-    public function toggleReaction(string $emoji): Reaction | int
+    public function react(string $emoji): Reaction | int
     {
         $existing = $this->getExistingReaction($emoji);
         if ($existing) {
@@ -33,9 +34,12 @@ trait HasReactions
         if (! $this->isAllowed($emoji)) {
             throw new \Exception('This reaction is not allowed.');
         }
+
         return $this->reactions()->create([
             'user_id' => Auth::check() ? Auth::id() : null,
             'emoji' => $emoji,
+            'guest_id' => app(NestedComments::class)->getGuestId(),
+            'guest_name' => app(NestedComments::class)->getGuestName(),
             'ip_address' => request()->ip(),
         ]);
     }
@@ -53,14 +57,18 @@ trait HasReactions
         }
 
         if ($allowGuest && ! Auth::check()) {
+            $guestId = app(NestedComments::class)->getGuestId();
+            if (! $guestId) {
+                throw new \Exception('Sorry, your guest session has not bee setup.');
+            }
             $existingQuery = $this->reactions()
-                ->where('ip_address', '=', request()->ip());
+                ->where('guest_id', '=', $guestId);
 
         } else {
             $existingQuery = $this->reactions()
                 ->where('user_id', '=', Auth::id());
-
         }
+
         if ($allowMultiple) {
             $existingQuery->where('emoji', '=', $emoji);
         }
@@ -74,6 +82,7 @@ trait HasReactions
         if (empty($allowed)) {
             return true;
         }
+
         return in_array($emoji, $allowed);
     }
 }

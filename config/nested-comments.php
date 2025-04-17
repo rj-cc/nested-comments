@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Model;
+
 return [
     'tables' => [
         'comments' => 'comments',
@@ -10,7 +13,7 @@ return [
     'models' => [
         'comment' => \Coolsam\NestedComments\Models\Comment::class,
         'reaction' => \Coolsam\NestedComments\Models\Reaction::class,
-        'user' => env( 'AUTH_MODEL', 'App\Models\User'), // The model that will be used to get the authenticated user
+        'user' => env('AUTH_MODEL', 'App\Models\User'), // The model that will be used to get the authenticated user
     ],
 
     'policies' => [
@@ -32,4 +35,7 @@ return [
     'allow-multiple-reactions' => env('ALLOW_MULTIPLE_REACTIONS', false), // Allow multiple reactions from the same user
     'allow-guest-reactions' => env('ALLOW_GUEST_REACTIONS', false), // Allow guest users to react
     'allow-guest-comments' => env('ALLOW_GUEST_COMMENTS', false), // Allow guest users to comment
+    'closures' => [
+        'getUserNameUsing' => fn (Authenticatable | Model $user) => $user->getAttribute('name')
+    ]
 ];
