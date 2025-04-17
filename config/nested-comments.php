@@ -17,6 +17,19 @@ return [
         'comment' => null,
         'reaction' => null,
     ],
-
-    'guest-comments' => env('ALLOW_GUEST_COMMENTS', false), // Allow guest users to comment
+    'allowed-reactions' => [
+        '👍', // thumbs up
+        '👎', // thumbs down
+        '❤️', // heart
+        '😂', // laughing
+        '😮', // surprised
+        '😢', // crying
+        '😡', // angry
+        '🔥', // fire
+        '🎉', // party popper
+        '🚀', // rocket
+    ],
+    'allow-multiple-reactions' => env('ALLOW_MULTIPLE_REACTIONS', false), // Allow multiple reactions from the same user
+    'allow-guest-reactions' => env('ALLOW_GUEST_REACTIONS', false), // Allow guest users to react
+    'allow-guest-comments' => env('ALLOW_GUEST_COMMENTS', false), // Allow guest users to comment
 ];
