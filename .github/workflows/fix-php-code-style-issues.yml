@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   php-code-styling:
@@ -24,10 +25,12 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
-          commit-message: Fix styling
+          commit-message: |
+            Fix PHP code styling issues
+            
+            - Fix PHP code styling issues
           branch: php-style-fixes
           title: Fix PHP Code Styling
-          body: This PR fixes PHP code style issues.
           labels: code-style
           auto-merge: true
           delete-branch: true
