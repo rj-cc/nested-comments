@@ -2,7 +2,7 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/coolsam/nested-comments.svg?style=flat-square)](https://packagist.org/packages/coolsam/nested-comments)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/coolsam726/nested-comments/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/coolsam/nested-comments/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/coolsam726/nested-comments/fix-php-code-styling.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/coolsam726/nested-comments/actions?query=workflow%3A"Fix+PHP+Code+Styling"+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/coolsam726/nested-comments/fix-php-code-styling.yml?branch=features&label=code%20style&style=flat-square)](https://github.com/coolsam726/nested-comments/actions?query=workflow%3A"Fix+PHP+Code+Styling"+branch%3Afeatures)
 [![Total Downloads](https://img.shields.io/packagist/dt/coolsam/nested-comments.svg?style=flat-square)](https://packagist.org/packages/coolsam/nested-comments)
 
 

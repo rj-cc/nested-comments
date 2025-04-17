@@ -5,6 +5,10 @@ on:
     paths:
       - '**.php'
       - 'phpstan.neon.dist'
+    branches:
+      - '**'
+    branches-ignore:
+      - "main"
 
 jobs:
   phpstan:
