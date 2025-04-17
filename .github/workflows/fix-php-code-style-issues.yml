@@ -4,10 +4,6 @@ on:
   push:
     paths:
       - '**.php'
-    branches:
-      - '**'
-    branches-ignore:
-      - "main"
 
 permissions:
   contents: write
@@ -25,7 +21,13 @@ jobs:
       - name: Fix PHP code style issues
         uses: aglipanci/laravel-pint-action@2.5
 
-      - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v5
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
         with:
-          commit_message: Fix styling
+          commit-message: Fix styling
+          branch: php-style-fixes
+          title: Fix PHP Code Styling
+          body: This PR fixes PHP code style issues.
+          labels: code-style
+          auto-merge: true
+          delete-branch: true
