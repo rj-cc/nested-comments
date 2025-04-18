@@ -2,10 +2,14 @@
 
 namespace Coolsam\NestedComments;
 
+use Filament\AvatarProviders\UiAvatarsProvider;
+use Filament\Facades\Filament;
+use Filament\Support\Facades\FilamentColor;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Spatie\Color\Rgb;
 
 class NestedComments
 {
@@ -54,5 +58,22 @@ class NestedComments
     public function classHasTrait(object | string $classInstance, string $trait): bool
     {
         return in_array($trait, class_uses_recursive($classInstance));
+    }
+
+    public function geDefaultUserAvatar(Authenticatable | Model | string $user)
+    {
+        if (is_string($user)) {
+            $name = str($user)
+                ->trim()
+                ->explode(' ')
+                ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
+                ->join(' ');
+
+            $backgroundColor = Rgb::fromString('rgb(' . FilamentColor::getColors()['gray'][950] . ')')->toHex();
+
+            return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=' . str($backgroundColor)->after('#');
+        } else {
+            return app(UiAvatarsProvider::class)->get($user);
+        }
     }
 }

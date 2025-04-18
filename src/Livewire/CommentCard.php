@@ -13,7 +13,7 @@ class CommentCard extends Component
     public bool $showReplies = false;
 
     protected $listeners = [
-        'refresh'=> 'refreshReplies'
+        'refresh' => 'refreshReplies',
     ];
 
     public function mount(?Comment $comment = null): void
@@ -28,6 +28,7 @@ class CommentCard extends Component
     public function render()
     {
         $namespace = NestedCommentsServiceProvider::$viewNamespace;
+
         return view("$namespace::livewire.comment-card");
     }
 
@@ -38,6 +39,15 @@ class CommentCard extends Component
 
     public function toggleReplies(): void
     {
-        $this->showReplies = !$this->showReplies;
+        $this->showReplies = ! $this->showReplies;
+    }
+
+    public function getAvatar()
+    {
+        if (! $this->comment) {
+            return '';
+        }
+
+        return call_user_func(config('nested-comments.closures.getUserAvatarUsing'), $this->comment->commentator);
     }
 }
