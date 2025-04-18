@@ -5,8 +5,8 @@
                 {{ __('Comments') }}
             </div>
             <div>
-                <x-filament::badge color="danger">
-                    {{$this->comments->count()}}
+                <x-filament::badge color="danger" :title="$this->comments->count()">
+                    {{\Illuminate\Support\Number::forHumans($this->comments->count(),maxPrecision: 3, abbreviate: true)}}
                 </x-filament::badge>
             </div>
         </div>

@@ -32,7 +32,15 @@
                     class="cursor-pointer"
                     icon="heroicon-o-arrow-uturn-left"
                     wire:click.prevent="toggleReplies">
-                {{$this->comment->replies_count}} {{ str('Reply')->plural($this->comment->replies_count) }} {{$this->showReplies ? ' - Hide' : ' - Show'}}
+                @if($this->comment->replies_count > 0)
+                    <span title="{{ \Illuminate\Support\Number::format($this->comment->replies_count) }}">
+                        {{\Illuminate\Support\Number::forHumans($this->comment->replies_count, maxPrecision: 3, abbreviate: true)}} {{ str('Reply')->plural($this->comment->replies_count) }}
+                    </span>
+                @else
+                    <span title="{{__('No replies yet')}}">
+                        Reply
+                    </span>
+                @endif
             </x-filament::link>
         </div>
     </div>
