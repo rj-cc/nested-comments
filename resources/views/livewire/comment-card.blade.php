@@ -1,4 +1,4 @@
-<div wire:poll.15s>
+<div x-data wire:poll.15s>
     <div class="my-4 p-4 bg-primary-50 rounded-lg ring-gray-100 dark:bg-gray-950">
         <div class="flex flex-wrap items-center justify-between">
             <div x-data="{showFullDate: false}" class="flex items-center space-x-2">
@@ -45,7 +45,7 @@
         </div>
     </div>
     @if($showReplies)
-        <div class="pl-8 border-l my-2">
+        <div x-ref="repliesContainer" class="pl-8 border-l pb-4 border-b rounded-bl-xl my-2">
             @foreach($this->comment->children as $reply)
                 <livewire:nested-comments::comment-card
                         :key="$reply->getKey()"
@@ -55,9 +55,18 @@
                     :key="$comment->getKey()"
                     :commentable="$comment->commentable"
                     :reply-to="$comment"
-                    :adding-comment="false"
+                    :adding-comment="true"
                     wire:loading.attr="disabled"
             />
+            <x-filament::icon-button
+                    x-on:click="
+                        if ($refs.repliesContainer && $refs.repliesContainer.offsetHeight && $refs.repliesContainer.style.display !== 'none') {
+                            const offset = $refs.repliesContainer.offsetHeight;
+                            window.scrollBy({ top: -offset, behavior: 'smooth' });
+                        }
+                    "
+                    type="button"
+                    label="Hide replies" icon="heroicon-o-minus-circle" class="absolute -left-8 -bottom-4" wire:click.prevent="toggleReplies"/>
         </div>
     @endif
 </div>
