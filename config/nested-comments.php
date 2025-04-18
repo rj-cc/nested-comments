@@ -36,6 +36,7 @@ return [
     'allow-guest-reactions' => env('ALLOW_GUEST_REACTIONS', false), // Allow guest users to react
     'allow-guest-comments' => env('ALLOW_GUEST_COMMENTS', false), // Allow guest users to comment
     'closures' => [
-        'getUserNameUsing' => fn (Authenticatable | Model $user) => $user->getAttribute('name')
-    ]
+        'getUserNameUsing' => fn (Authenticatable | Model $user) => $user->getAttribute('name'),
+        'getUserAvatarUsing' => fn (Authenticatable | Model | string $user) => app(\Coolsam\NestedComments\NestedComments::class)->geDefaultUserAvatar($user),
+    ],
 ];
