@@ -32,4 +32,9 @@ class Comment extends Model
         }
         return $this->getAttribute('guest_name');
     }
+
+    public function getRepliesCountAttribute(): int
+    {
+        return $this->children()->count();
+    }
 }
