@@ -1,5 +1,5 @@
 <div x-data wire:poll.15s>
-    <div class="my-4 p-4 bg-primary-50 rounded-lg ring-gray-100 dark:bg-gray-950">
+    <div class="my-4 p-8 bg-gray-50 rounded-lg ring-gray-100 dark:bg-gray-950">
         <div class="flex flex-wrap items-center justify-between">
             <div x-data="{showFullDate: false}" class="flex items-center space-x-2">
                 <x-filament::avatar
@@ -30,7 +30,7 @@
             <x-filament::link
                     size="xs"
                     class="cursor-pointer"
-                    icon="heroicon-o-arrow-uturn-left"
+                    icon="heroicon-s-chat-bubble-left-right"
                     wire:click.prevent="toggleReplies">
                 @if($this->comment->replies_count > 0)
                     <span title="{{ \Illuminate\Support\Number::format($this->comment->replies_count) }}">
