@@ -7,6 +7,11 @@ parameters:
         - src
         - config
         - database
+    ignoreErrors:
+        - '#Trait Coolsam\\NestedComments\\Concerns\\HasComments is used zero times and is not analysed#'
+        -
+            message: "#Called 'env' outside of the config directory which returns null when the config is cached, use 'config'#"
+            path: config/*
     tmpDir: build/phpstan
     checkOctaneCompatibility: true
     checkModelProperties: true

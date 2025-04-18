@@ -2,7 +2,6 @@
 
 namespace Coolsam\NestedComments\Livewire;
 
-use Coolsam\NestedComments\Concerns\HasComments;
 use Coolsam\NestedComments\Models\Comment;
 use Coolsam\NestedComments\NestedCommentsServiceProvider;
 use Filament\Forms;
@@ -38,9 +37,6 @@ class AddComment extends Component implements HasForms
         $this->form->fill();
     }
 
-    /**
-     * @return Model&HasComments
-     */
     public function getCommentable(): Model
     {
         if (! $this->commentable) {
@@ -80,6 +76,7 @@ class AddComment extends Component implements HasForms
     public function render(): View
     {
         $namespace = NestedCommentsServiceProvider::$viewNamespace;
+
         return view("$namespace::livewire.add-comment");
     }
 

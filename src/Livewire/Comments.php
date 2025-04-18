@@ -13,7 +13,7 @@ use Livewire\Component;
 class Comments extends Component
 {
     /**
-     * @var Model&HasComments|null
+     * @var (Model&HasComments)|null
      */
     public ?Model $record = null;
 
@@ -42,8 +42,10 @@ class Comments extends Component
 
     public function refreshComments(): void
     {
-        $this->record = $this->record?->newQuery()->find($this->record->getKey());
-        $this->comments = $this->record?->getCommentsTree();
+        $this->record = $this->record->refresh();
+        if (method_exists($this->record, 'getCommentsTree')) {
+            $this->comments = $this->record->getCommentsTree();
+        }
     }
 
     public function render()
