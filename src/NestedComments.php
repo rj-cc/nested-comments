@@ -50,4 +50,9 @@ class NestedComments
 
         return session(self::GUEST_NAME_FIELD);
     }
+
+    public function classHasTrait(object | string $classInstance, string $trait): bool
+    {
+        return in_array($trait, class_uses_recursive($classInstance));
+    }
 }

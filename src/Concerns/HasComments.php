@@ -8,7 +8,6 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * @mixin Model
@@ -37,13 +36,16 @@ trait HasComments
             $query->limit($limit);
         }
 
-        $columns = ['id', 'parent_id', '_lft', '_rgt', ...$columns];
+        if (filled($columns) && $columns[0] !== '*') {
+            $columns = ['id', 'parent_id', '_lft', '_rgt', ...$columns];
+        }
 
-        return collect($query->get($columns)->map(function (Comment $comment) use ($columns) {
+        return $query->get($columns)->map(function (Comment $comment) use ($columns) {
             $descendants = $comment->getDescendants($columns);
+            $comment->setAttribute('replies', $descendants);
 
-            return collect($comment->toArray())->put('descendants', $descendants->toArray());
-        })->toArray());
+            return $comment;
+        });
     }
 
     /**

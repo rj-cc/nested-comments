@@ -4,6 +4,9 @@ namespace Coolsam\NestedComments;
 
 use Coolsam\NestedComments\Commands\NestedCommentsCommand;
 use Coolsam\NestedComments\Http\Middleware\GuestCommentatorMiddleware;
+use Coolsam\NestedComments\Livewire\AddComment;
+use Coolsam\NestedComments\Livewire\CommentCard;
+use Coolsam\NestedComments\Livewire\Comments;
 use Coolsam\NestedComments\Testing\TestsNestedComments;
 use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Asset;
@@ -13,6 +16,7 @@ use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Filesystem\Filesystem;
 use Livewire\Features\SupportTesting\Testable;
+use Livewire\Livewire;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -22,8 +26,6 @@ class NestedCommentsServiceProvider extends PackageServiceProvider
     public static string $name = 'nested-comments';
 
     public static string $viewNamespace = 'nested-comments';
-
-
 
     public function configurePackage(Package $package): void
     {
@@ -59,6 +61,9 @@ class NestedCommentsServiceProvider extends PackageServiceProvider
         if (file_exists($package->basePath('/../resources/views'))) {
             $package->hasViews(static::$viewNamespace);
         }
+        if (file_exists($package->basePath('/../resources/views/components'))) {
+            $package->hasViewComponents(static::$viewNamespace);
+        }
     }
 
     public function packageRegistered(): void {}
@@ -71,6 +76,10 @@ class NestedCommentsServiceProvider extends PackageServiceProvider
     public function packageBooted(): void
     {
         $this->registerPolicies();
+
+        // Livewire components
+        $this->registerLivewireComponents();
+
         // Asset Registration
         FilamentAsset::register(
             $this->getAssets(),
@@ -174,5 +183,26 @@ class NestedCommentsServiceProvider extends PackageServiceProvider
             }
             \Gate::policy($modelClass, $policy);
         }
+    }
+
+    protected function registerLivewireComponents()
+    {
+        $namespace = static::$viewNamespace;
+        $components = $this->getLivewireComponents();
+        if (empty($components)) {
+            return;
+        }
+        foreach ($components as $name => $component) {
+            Livewire::component("$namespace::$name", $component);
+        }
+    }
+
+    protected function getLivewireComponents(): array
+    {
+        return [
+            'comments' => Comments::class,
+            'comment-card' => CommentCard::class,
+            'add-comment' => AddComment::class,
+        ];
     }
 }
