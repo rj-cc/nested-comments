@@ -15,7 +15,7 @@
         </div>
     </div>
     @if($showReplies)
-        <div class="ms-8 border-r">
+        <div class="pl-8 border-l my-2">
             @foreach($this->comment->children as $reply)
                 <livewire:nested-comments::comment-card
                         :key="$reply->getKey()"
