@@ -4,6 +4,7 @@ namespace Coolsam\NestedComments\Concerns;
 
 use Coolsam\NestedComments\Models\Reaction;
 use Coolsam\NestedComments\NestedComments;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,7 +23,7 @@ trait HasReactions
     /**
      * @throws \Throwable
      */
-    public function react(string $emoji): Reaction | int
+    public function react(string $emoji): Reaction | Model | int
     {
         $existing = $this->getExistingReaction($emoji);
         if ($existing) {
@@ -47,7 +48,7 @@ trait HasReactions
     /**
      * @throws \Exception
      */
-    protected function getExistingReaction(string $emoji): ?Reaction
+    protected function getExistingReaction(string $emoji): Reaction | Model | null
     {
         $allowMultiple = \config('nested-comments.allow-multiple-reactions', false);
         $allowGuest = \config('nested-comments.allow-guest-reactions', false);
