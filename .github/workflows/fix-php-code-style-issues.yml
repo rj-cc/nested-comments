@@ -12,8 +12,6 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
-  issues: write
 
 jobs:
   php-code-styling:
@@ -28,21 +26,7 @@ jobs:
       - name: Fix PHP code style issues
         uses: aglipanci/laravel-pint-action@2.5
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit-message: |
-            Fix PHP code styling issues
-            
-            - Fix PHP code styling issues
-          branch: php-style-fixes
-          title: Fix PHP Code Styling
-          labels: code-style
-          delete-branch: true
-
-      - name: Auto-merge Pull Request
-        uses: pascalgn/automerge-action@v0.16.4
-        with:
-          merge-method: squash
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          commit_message: Fix styling using laravel pint
