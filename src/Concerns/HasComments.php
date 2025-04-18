@@ -3,8 +3,11 @@
 namespace Coolsam\NestedComments\Concerns;
 
 use Coolsam\NestedComments\Models\Comment;
+use Coolsam\NestedComments\NestedComments;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Collection;
 
 /**
  * @mixin Model
@@ -21,7 +24,7 @@ trait HasComments
         return $this->comments()->count();
     }
 
-    public function getCommentsTree($offset = null, $limit = null, $columns = ['*'])
+    public function getCommentsTree($offset = null, $limit = null, $columns = ['*']): Collection
     {
         $query = $this->comments()
             ->getQuery()
@@ -33,24 +36,32 @@ trait HasComments
             $query->limit($limit);
         }
 
-        $columns = ['id', 'parent_id', '_lft', '_rgt', ...$columns];
+        if (filled($columns) && $columns[0] !== '*') {
+            $columns = ['id', 'parent_id', '_lft', '_rgt', ...$columns];
+        }
 
-        return collect($query->get($columns)->map(function (Comment $comment) use ($columns) {
+        return $query->get($columns)->map(function (Comment $comment) use ($columns) {
             $descendants = $comment->getDescendants($columns);
-            return collect($comment->toArray())->put('descendants', $descendants->toArray());
-        })->toArray());
+            $comment->setAttribute('replies', $descendants);
+
+            return $comment;
+        });
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function addComment(string $comment, mixed $parentId = null)
+    public function comment(string $comment, mixed $parentId = null, ?string $name = null)
     {
         $allowGuest = config('nested-comments.allow-guest-comments', false);
         if (! $allowGuest && ! auth()->check()) {
-            throw new \Exception('You must be logged in to comment.');
+            throw new Exception('You must be logged in to comment.');
         }
-
+        if ($name) {
+            app(NestedComments::class)->setGuestName($name);
+        }
+        $guestId = app(NestedComments::class)->getGuestId();
+        $guestName = app(NestedComments::class)->getGuestName();
         if ($allowGuest && ! auth()->check()) {
             $userId = null;
         } else {
@@ -63,21 +74,62 @@ trait HasComments
             'commentable_id' => $this->getKey(),
             'commentable_type' => $this->getMorphClass(),
             'parent_id' => $parentId,
+            'guest_id' => $guestId,
+            'guest_name' => $guestName,
             'ip_address' => request()->ip(),
         ]);
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
+     */
+    public function editComment(Comment $comment, string $body, ?string $name = null): ?bool
+    {
+        $allowGuest = config('nested-comments.allow-guest-comments', false);
+
+        if (! auth()->check() && ! $allowGuest) {
+            throw new Exception('You must be logged in to edit your comment.');
+        }
+
+        if ($name) {
+            app(NestedComments::class)->setGuestName($name);
+        }
+
+        if (\auth()->check() && $comment->getAttribute('user_id') !== auth()->id()) {
+            throw new Exception('You are not authorized to edit this comment.');
+        }
+
+        if ($allowGuest && ! auth()->check()) {
+            $guestId = app(NestedComments::class)->getGuestId();
+            if ($comment->getAttribute('guest_id') !== $guestId) {
+                throw new Exception('You are not authorized to edit this comment.');
+            }
+        }
+        $guestName = app(NestedComments::class)->getGuestName();
+
+        return $comment->update(['body' => $body, 'guest_name' => $guestName, 'ip_address' => request()->ip()]);
+    }
+
+    /**
+     * @throws Exception
      */
     public function deleteComment(Comment $comment): ?bool
     {
-        if (! auth()->check()) {
-            throw new \Exception('You must be logged in to delete your comment.');
+        $allowGuest = config('nested-comments.allow-guest-comments', false);
+
+        if (! auth()->check() && ! $allowGuest) {
+            throw new Exception('You must be logged in to edit your comment.');
         }
 
-        if ($comment->getAttribute('user_id') !== auth()->id()) {
-            throw new \Exception('You are not authorized to delete this comment.');
+        if (\auth()->check() && $comment->getAttribute('user_id') !== auth()->id()) {
+            throw new Exception('You are not authorized to edit this comment.');
+        }
+
+        if ($allowGuest && ! auth()->check()) {
+            $guestId = app(NestedComments::class)->getGuestId();
+            if ($comment->getAttribute('guest_id') !== $guestId) {
+                throw new Exception('You are not authorized to edit this comment.');
+            }
         }
 
         return $comment->delete();

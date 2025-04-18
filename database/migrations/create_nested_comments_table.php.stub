@@ -16,7 +16,10 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained($users)->cascadeOnDelete();
             $table->text('body');
             $table->morphs('commentable');
+            $table->ulid('guest_id')->nullable()->index();
+            $table->string('guest_name')->nullable();
             $table->ipAddress()->nullable();
+            $table->boolean('is_published')->default(false);
             $table->timestamps();
         });
 
@@ -25,7 +28,10 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained($users)->cascadeOnDelete();
             $table->morphs('reactable');
             $table->string('emoji');
+            $table->ulid('guest_id')->nullable()->index();
+            $table->string('guest_name')->nullable();
             $table->ipAddress()->nullable();
+            $table->boolean('is_published')->default(false);
             $table->timestamps();
         });
     }
