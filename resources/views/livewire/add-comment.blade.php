@@ -15,7 +15,7 @@
                 :inline-prefix="true"
                 prefix-icon="heroicon-o-chat-bubble-bottom-center-text">
             <x-filament::input
-                    placeholder="Add a comment..."
+                    :placeholder="$this->replyTo?->getKey() ? 'Add a reply' : 'Add a new comment'"
                     type="text"
                     wire:click.prevent.stop="showForm(true)"
                     :readonly="true"
