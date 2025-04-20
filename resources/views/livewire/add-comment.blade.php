@@ -2,7 +2,6 @@
     @if($this->addingComment)
         <form wire:submit.prevent="create" wire:loading.attr="disabled" class="space-y-4">
             {{ $this->form }}
-
             <x-filament::button type="submit">
                 Submit
             </x-filament::button>

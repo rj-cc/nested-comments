@@ -1,5 +1,5 @@
 <div x-data wire:poll.15s>
-    <div class="my-4 p-4 bg-primary-50 rounded-lg ring-gray-100 dark:bg-gray-950">
+    <div class="my-4 p-8 bg-gray-50 rounded-lg ring-gray-100 dark:bg-gray-950">
         <div class="flex flex-wrap items-center justify-between">
             <div x-data="{showFullDate: false}" class="flex items-center space-x-2">
                 <x-filament::avatar
@@ -9,7 +9,7 @@
                         size="md"
                         :circular="false"
                 />
-                <div x-on:click="showFullDate = !showFullDate" title="{{__('Show full date')}}" class="cursor-pointer">
+                <div x-on:mouseover="showFullDate = true" x-on:mouseout="showFullDate = false" class="cursor-pointer">
                     <p class="text-sm font-semibold text-gray-900 dark:text-white">
                         {{ $this->comment->user?->name }}
                     </p>
@@ -30,7 +30,7 @@
             <x-filament::link
                     size="xs"
                     class="cursor-pointer"
-                    icon="heroicon-o-arrow-uturn-left"
+                    icon="heroicon-s-chat-bubble-left-right"
                     wire:click.prevent="toggleReplies">
                 @if($this->comment->replies_count > 0)
                     <span title="{{ \Illuminate\Support\Number::format($this->comment->replies_count) }}">
@@ -70,3 +70,12 @@
         </div>
     @endif
 </div>
+
+@script
+<script>
+  document.querySelectorAll('[data-mention-id]').forEach(element => {
+    // add an @ before using a pseudo-element
+    element.classList.add(['comment-mention']);
+  });
+</script>
+@endscript

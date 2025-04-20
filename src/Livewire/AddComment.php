@@ -3,11 +3,13 @@
 namespace Coolsam\NestedComments\Livewire;
 
 use Coolsam\NestedComments\Models\Comment;
+use Coolsam\NestedComments\NestedComments;
 use Coolsam\NestedComments\NestedCommentsServiceProvider;
-use Filament\Forms;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use FilamentTiptapEditor\Concerns\HasFormMentions;
+use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
@@ -17,6 +19,7 @@ use Livewire\Component;
  */
 class AddComment extends Component implements HasForms
 {
+    use HasFormMentions;
     use InteractsWithForms;
 
     public ?array $data = [];
@@ -48,9 +51,17 @@ class AddComment extends Component implements HasForms
 
     public function form(Form $form): Form
     {
+        $mentionsClosure = config('nested-comments.closures.getMentionsUsing', fn (string $query, Model $commentable) => app(NestedComments::class)->getUserMentions($query));
+
         return $form
             ->schema([
-                Forms\Components\RichEditor::make('body')->required()->autofocus(true),
+                TiptapEditor::make('body')
+                    ->label(__('Your comment'))
+                    ->profile('minimal')
+                    ->extraInputAttributes(['style' => 'min-height: 12rem;'])
+                    ->getMentionItemsUsing(fn (string $query) => $mentionsClosure($query, $this->getCommentable()))
+                    ->required()
+                    ->autofocus(),
             ])
             ->statePath('data')
             ->model(config('nested-comments.models.comment', Comment::class));
