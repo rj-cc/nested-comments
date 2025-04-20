@@ -38,5 +38,7 @@ return [
     'closures' => [
         'getUserNameUsing' => fn (Authenticatable | Model $user) => $user->getAttribute('name'),
         'getUserAvatarUsing' => fn (Authenticatable | Model | string $user) => app(\Coolsam\NestedComments\NestedComments::class)->geDefaultUserAvatar($user),
+        //        'getMentionsUsing' => fn (string $query) => app(\Coolsam\NestedComments\NestedComments::class)->getUserMentions($query), // Get mentions of all users in the DB
+        'getMentionsUsing' => fn (string $query, Model $commentable) => app(\Coolsam\NestedComments\NestedComments::class)->getCurrentThreadUsers($query, $commentable),
     ],
 ];

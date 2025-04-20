@@ -14,7 +14,9 @@ use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
+use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Artisan;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
@@ -38,7 +40,25 @@ class NestedCommentsServiceProvider extends PackageServiceProvider
             ->hasCommands($this->getCommands())
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command
-                    ->publishConfigFile()
+                    ->startWith(function (Command $command) {
+                        $command->comment('Publishing config file...');
+                        $forceConfig = $command->confirm(__('Do you want to override existing config file?'), false);
+                        Artisan::call('vendor:publish', [
+                            '--tag' => 'nested-comments-config',
+                            '--force' => $forceConfig,
+                        ]);
+                        $command->info('Config file published successfully.');
+
+                        $forceAssets = $command->confirm(__('Do you want to override existing assets with new assets?'), true);
+                        if ($forceAssets) {
+                            // Delete the existing assets in public/css/coolsam and public/js/coolsam
+                            $filesystem = app(Filesystem::class);
+                            $filesystem->deleteDirectory(public_path('css/coolsam/nested-comments'));
+                            $filesystem->deleteDirectory(public_path('js/coolsam/nested-comments'));
+                            Artisan::call('filament:assets');
+                        }
+                    })
+                    ->publishAssets()
                     ->publishMigrations()
                     ->askToRunMigrations()
                     ->askToStarRepoOnGitHub('coolsam/nested-comments');

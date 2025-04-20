@@ -9,7 +9,7 @@
                         size="md"
                         :circular="false"
                 />
-                <div x-on:click="showFullDate = !showFullDate" title="{{__('Show full date')}}" class="cursor-pointer">
+                <div x-on:mouseover="showFullDate = true" x-on:mouseout="showFullDate = false" class="cursor-pointer">
                     <p class="text-sm font-semibold text-gray-900 dark:text-white">
                         {{ $this->comment->user?->name }}
                     </p>
@@ -70,3 +70,12 @@
         </div>
     @endif
 </div>
+
+@script
+<script>
+  document.querySelectorAll('[data-mention-id]').forEach(element => {
+    // add an @ before using a pseudo-element
+    element.classList.add(['comment-mention']);
+  });
+</script>
+@endscript
