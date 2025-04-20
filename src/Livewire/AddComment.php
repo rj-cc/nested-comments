@@ -59,7 +59,7 @@ class AddComment extends Component implements HasForms
                     ->label(__('Your comment'))
                     ->profile('minimal')
                     ->extraInputAttributes(['style' => 'min-height: 12rem;'])
-                    ->getMentionItemsUsing(fn(string $query) => $mentionsClosure($query, $this->getCommentable()))
+                    ->getMentionItemsUsing(fn (string $query) => $mentionsClosure($query, $this->getCommentable()))
                     ->required()
                     ->autofocus(),
             ])

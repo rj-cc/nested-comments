@@ -25,8 +25,10 @@ class NestedComments
     public function getGuestName(): string
     {
         if (Auth::check()) {
-            return call_user_func(config('nested-comments.closures.getUserNameUsing',
-                fn(Authenticatable|Model $user) => $user->getAttribute('name')), Auth::user());
+            return call_user_func(config(
+                'nested-comments.closures.getUserNameUsing',
+                fn (Authenticatable | Model $user) => $user->getAttribute('name')
+            ), Auth::user());
         }
 
         return session(self::GUEST_NAME_FIELD, 'Guest');
@@ -40,7 +42,7 @@ class NestedComments
     public function setOrGetGuestId()
     {
         $id = Str::ulid()->toString();
-        if (!session()->has(self::GUEST_ID_FIELD)) {
+        if (! session()->has(self::GUEST_ID_FIELD)) {
             session([self::GUEST_ID_FIELD => $id]);
         }
 
@@ -49,30 +51,30 @@ class NestedComments
 
     public function setOrGetGuestName()
     {
-        if (!session()->has(self::GUEST_NAME_FIELD)) {
+        if (! session()->has(self::GUEST_NAME_FIELD)) {
             session([self::GUEST_NAME_FIELD => 'Guest']);
         }
 
         return session(self::GUEST_NAME_FIELD);
     }
 
-    public function classHasTrait(object|string $classInstance, string $trait): bool
+    public function classHasTrait(object | string $classInstance, string $trait): bool
     {
         return in_array($trait, class_uses_recursive($classInstance));
     }
 
-    public function geDefaultUserAvatar(Authenticatable|Model|string $user)
+    public function geDefaultUserAvatar(Authenticatable | Model | string $user)
     {
         if (is_string($user)) {
             $name = str($user)
                 ->trim()
                 ->explode(' ')
-                ->map(fn(string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
+                ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
                 ->join(' ');
 
-            $backgroundColor = Rgb::fromString('rgb('.FilamentColor::getColors()['gray'][950].')')->toHex();
+            $backgroundColor = Rgb::fromString('rgb(' . FilamentColor::getColors()['gray'][950] . ')')->toHex();
 
-            return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=FFFFFF&background='.str($backgroundColor)->after('#');
+            return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=' . str($backgroundColor)->after('#');
         } else {
             return app(UiAvatarsProvider::class)->get($user);
         }
@@ -104,9 +106,10 @@ class NestedComments
 
         return $userModel::query()
             ->whereIn('id', $ids)
-            ->where(fn($q) => $q
-                ->where('name', 'like', "%{$searchQuery}%")
-                ->orWhere('email', 'like', "%{$searchQuery}%")
+            ->where(
+                fn ($q) => $q
+                    ->where('name', 'like', "%{$searchQuery}%")
+                    ->orWhere('email', 'like', "%{$searchQuery}%")
             )
             ->take(20)
             ->get()
