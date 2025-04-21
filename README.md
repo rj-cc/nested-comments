@@ -8,7 +8,10 @@
 
 
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+This package allows you to incorporate comments and replies in your Filament forms, infolists, pages, widgets etc, or even simply in your livewire components. Comment replies can be nested as deep as you want, using the Nested Set data structure. Additionally, the package comes with a Reactions feature to enable your users to react to any of your models (e.g comments or posts) with selected emoji reactions.
+
+![image](https://github.com/user-attachments/assets/e4ff32b3-0eb9-4ad4-8edb-de91b1940e13)
+
 
 ## Installation
 
@@ -25,30 +28,20 @@ php artisan vendor:publish --tag="nested-comments-migrations"
 php artisan migrate
 ```
 
-You can publish the config file with:
+Run the installation command and follow the prompts:
 
 ```bash
-php artisan vendor:publish --tag="nested-comments-config"
+php artisan nested-comments:install
 ```
 
-Optionally, you can publish the views using
+Adjust the configuration file as necessary, then run migrations.
 
-```bash
-php artisan vendor:publish --tag="nested-comments-views"
-```
-
-This is the contents of the published config file:
-
-```php
-return [
-];
-```
+`That's it! You are now ready to add nested comments
 
 ## Usage
-
+**WIP**
 ```php
-$nestedComments = new Coolsam\NestedComments();
-echo $nestedComments->echoPhrase('Hello, Coolsam!');
+
 ```
 
 ## Testing
