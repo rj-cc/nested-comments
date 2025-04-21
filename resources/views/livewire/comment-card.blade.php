@@ -11,7 +11,7 @@
                 />
                 <div x-on:mouseover="showFullDate = true" x-on:mouseout="showFullDate = false" class="cursor-pointer">
                     <p class="text-sm font-semibold text-gray-900 dark:text-white">
-                        {{ $this->comment->user?->name }}
+                        {{ $this->comment->commentator }}
                     </p>
                     <p x-show="!showFullDate"
                        class="text-xs text-gray-500 dark:text-gray-400">
@@ -26,7 +26,7 @@
         <div class="prose my-4 max-w-none dark:prose-invert">
             {!! e(new \Illuminate\Support\HtmlString($this->comment?->body)) !!}
         </div>
-        <div class="flex flex-wrap items-center space-x-2">
+        <div class="flex flex-wrap items-center md:space-x-4 gap-2">
             <x-filament::link
                     size="xs"
                     class="cursor-pointer"
@@ -42,6 +42,7 @@
                     </span>
                 @endif
             </x-filament::link>
+            <livewire:nested-comments::reaction-panel :record="$this->comment"/>
         </div>
     </div>
     @if($showReplies)
@@ -55,7 +56,7 @@
                     :key="$comment->getKey()"
                     :commentable="$comment->commentable"
                     :reply-to="$comment"
-                    :adding-comment="true"
+                    :adding-comment="false"
                     wire:loading.attr="disabled"
             />
             <x-filament::icon-button

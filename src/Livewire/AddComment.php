@@ -59,6 +59,8 @@ class AddComment extends Component implements HasForms
                     ->label(__('Your comment'))
                     ->profile('minimal')
                     ->extraInputAttributes(['style' => 'min-height: 12rem;'])
+                    ->mentionItemsPlaceholder(config('nested-comments.mentions.items-placeholder', __('Search users by name or email address')))
+                    ->emptyMentionItemsMessage(config('nested-comments.mentions.empty-items-message', __('No users found')))
                     ->getMentionItemsUsing(fn (string $query) => $mentionsClosure($query, $this->getCommentable()))
                     ->required()
                     ->autofocus(),
