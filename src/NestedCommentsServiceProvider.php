@@ -3,6 +3,7 @@
 namespace Coolsam\NestedComments;
 
 use Coolsam\NestedComments\Commands\NestedCommentsCommand;
+use Coolsam\NestedComments\Filament\Widgets\CommentsWidget;
 use Coolsam\NestedComments\Http\Middleware\GuestCommentatorMiddleware;
 use Coolsam\NestedComments\Livewire\AddComment;
 use Coolsam\NestedComments\Livewire\CommentCard;
@@ -225,6 +226,7 @@ class NestedCommentsServiceProvider extends PackageServiceProvider
             'comment-card' => CommentCard::class,
             'add-comment' => AddComment::class,
             'reaction-panel' => ReactionPanel::class,
+            'filament.widgets.comments-widget' => CommentsWidget::class,
         ];
     }
 }

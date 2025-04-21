@@ -21,7 +21,9 @@ trait HasComments
 
     public function getCommentsCountAttribute(): int
     {
-        return $this->comments()->count();
+        return $this->comments()
+            ->where('parent_id', '=', null)
+            ->count();
     }
 
     public function getCommentsTree($offset = null, $limit = null, $columns = ['*']): Collection

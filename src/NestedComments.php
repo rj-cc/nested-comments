@@ -6,9 +6,12 @@ use Filament\AvatarProviders\UiAvatarsProvider;
 use Filament\Support\Facades\FilamentColor;
 use FilamentTiptapEditor\Data\MentionItem;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 use Spatie\Color\Rgb;
 
 class NestedComments
@@ -124,5 +127,12 @@ class NestedComments
                     roundedImage: true,
                 );
             })->toArray();
+    }
+
+    public function renderCommentsComponent(Model $record): \Illuminate\Contracts\View\View | Application | Factory | View
+    {
+        return view('nested-comments::components.comments', [
+            'record' => $record,
+        ]);
     }
 }
