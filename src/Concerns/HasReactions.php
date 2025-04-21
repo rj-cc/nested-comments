@@ -37,10 +37,10 @@ trait HasReactions
         return $this->reactions()->get(['id', 'emoji', 'user_id', 'guest_id'])->groupBy('emoji')->map(function ($item) {
             return $item->map(function ($reaction) {
                 return [
-                    'id' => $reaction->id,
-                    'user_id' => $reaction->user_id,
-                    'guest_id' => $reaction->guest_id,
-                    'name' => $reaction->user_id ? call_user_func(config('nested-comments.closures.getUserNameUsing'), $reaction->user) : $reaction->guest_name,
+                    'id' => $reaction->getKey(),
+                    'user_id' => $reaction->getAttribute('user_id'),
+                    'guest_id' => $reaction->getAttribute('guest_id'),
+                    'name' => $reaction->getAttribute('user_id') ? call_user_func(config('nested-comments.closures.getUserNameUsing'), $reaction->getAttribute('user')) : $reaction->getAttribute('guest_name'),
                 ];
             });
         });

@@ -28,9 +28,11 @@ class ReactionPanel extends Component
         return view('nested-comments::livewire.reaction-panel');
     }
 
-    public function react($emoji)
+    public function react($emoji): void
     {
-        $this->record->react($emoji);
-        $this->dispatch('refresh')->self();
+        if (method_exists($this->record, 'react')) {
+            $this->record->react($emoji);
+            $this->dispatch('refresh')->self();
+        }
     }
 }
