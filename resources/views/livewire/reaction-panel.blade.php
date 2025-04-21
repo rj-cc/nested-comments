@@ -1,4 +1,4 @@
-<div class="flex items-center gap-2 flex-wrap">
+<div wire:poll.10s class="flex items-center gap-2 flex-wrap">
     @foreach($this->record->reactions_map->filter(fn($reaction) => collect($reaction)->get('reactions') > 0) as  $reaction => $attribs)
         <x-filament::button
                 x-on:click="$wire.react('{{$reaction}}')"

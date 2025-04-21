@@ -1,4 +1,4 @@
-<x-filament::section class="!ring-0">
+<x-filament::section wire:poll.keep-alive class="!ring-0">
     <x-slot name="heading">
         <div class="flex items-center space-x-2">
             <div>
