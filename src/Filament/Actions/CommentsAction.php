@@ -1,0 +1,35 @@
+<?php
+
+namespace Coolsam\NestedComments\Filament\Actions;
+
+use Coolsam\NestedComments\NestedComments;
+use Filament\Actions\Action;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Contracts\View\View;
+
+class CommentsAction extends Action
+{
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->modalWidth('4xl')
+            ->slideOver()
+            ->modalHeading(fn (): string => __('View Comments'));
+        $this->modalSubmitAction(false);
+        $this->modalCancelActionLabel(__('Close'));
+        $this->icon('heroicon-o-chat-bubble-left-right');
+        $this->modalIcon('heroicon-o-chat-bubble-left-right');
+    }
+
+    public static function getDefaultName(): ?string
+    {
+        return 'comments';
+    }
+
+    public function getModalContent(): View | Htmlable | null
+    {
+        $record = $this->getRecord();
+
+        return app(NestedComments::class)->renderCommentsComponent($record);
+    }
+}
