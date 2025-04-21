@@ -99,10 +99,13 @@ class NestedComments
             })->toArray();
     }
 
-    public function getCurrentThreadUsers(string $searchQuery, Model $commentable)
+    public function getCurrentThreadUsers(string $searchQuery, $commentable): mixed
     {
         $userModel = config('nested-comments.models.user', config('auth.providers.users.model', 'App\\Models\\User'));
-        $ids = $commentable->comments()->pluck('user_id')->filter()->unique()->toArray();
+        $ids = [];
+        if (method_exists($commentable, 'comments')) {
+            $ids = $commentable->comments()->pluck('user_id')->filter()->unique()->toArray();
+        }
 
         return $userModel::query()
             ->whereIn('id', $ids)

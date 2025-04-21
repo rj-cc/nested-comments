@@ -7,6 +7,7 @@ use Coolsam\NestedComments\Http\Middleware\GuestCommentatorMiddleware;
 use Coolsam\NestedComments\Livewire\AddComment;
 use Coolsam\NestedComments\Livewire\CommentCard;
 use Coolsam\NestedComments\Livewire\Comments;
+use Coolsam\NestedComments\Livewire\ReactionPanel;
 use Coolsam\NestedComments\Testing\TestsNestedComments;
 use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Asset;
@@ -223,6 +224,7 @@ class NestedCommentsServiceProvider extends PackageServiceProvider
             'comments' => Comments::class,
             'comment-card' => CommentCard::class,
             'add-comment' => AddComment::class,
+            'reaction-panel' => ReactionPanel::class,
         ];
     }
 }
