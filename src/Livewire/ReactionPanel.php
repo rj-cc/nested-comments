@@ -2,7 +2,6 @@
 
 namespace Coolsam\NestedComments\Livewire;
 
-use Coolsam\NestedComments\Concerns\HasReactions;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
 
@@ -11,6 +10,7 @@ class ReactionPanel extends Component
     protected $listeners = [
         'refresh' => '$refresh',
     ];
+
     public array $allReactions = [];
 
     public Model $record;
