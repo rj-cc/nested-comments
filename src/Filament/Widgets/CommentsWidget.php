@@ -9,10 +9,8 @@ class CommentsWidget extends Widget
 {
     public ?Model $record = null;
 
-    /**
-     * @var view-string
-     */
-    protected static string $view = /** @var view-string */ 'nested-comments::filament.widgets.comments-widget';
+    /** @phpstan-ignore-next-line */
+    protected static string $view = 'nested-comments::filament.widgets.comments-widget';
 
     protected int | string | array $columnSpan = 'full';
 }

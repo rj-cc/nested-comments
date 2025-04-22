@@ -9,10 +9,8 @@ class CommentsEntry extends Entry
 {
     protected bool | Closure $isLabelHidden = true;
 
-    /**
-     * @var view-string
-     */
-    protected string $view = /** @var view-string */ 'nested-comments::filament.infolists.comments-entry';
+    /** @phpstan-ignore-next-line */
+    protected string $view = 'nested-comments::filament.infolists.comments-entry';
 
     protected array $columnSpan = ['default' => 'full'];
 }
