@@ -10,9 +10,7 @@
 
 This package allows you to incorporate comments and replies in your Filament forms, infolists, pages, widgets etc, or even simply in your livewire components. Comment replies can be nested as deep as you want, using the Nested Set data structure. Additionally, the package comes with a Reactions feature to enable your users to react to any of your models (e.g comments or posts) with selected emoji reactions.
 
-![image](https://github.com/user-attachments/assets/d23ef3bc-8621-4616-9ba9-2c695cea049a)
-
-
+![image](https://github.com/user-attachments/assets/2900e2a4-9ad2-40e2-8819-2650b6d70803)
 
 ## Installation
 
