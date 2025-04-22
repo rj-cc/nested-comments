@@ -10,7 +10,8 @@
 
 This package allows you to incorporate comments and replies in your Filament forms, infolists, pages, widgets etc, or even simply in your livewire components. Comment replies can be nested as deep as you want, using the Nested Set data structure. Additionally, the package comes with a Reactions feature to enable your users to react to any of your models (e.g comments or posts) with selected emoji reactions.
 
-![image](https://github.com/user-attachments/assets/e4ff32b3-0eb9-4ad4-8edb-de91b1940e13)
+![image](https://github.com/user-attachments/assets/d23ef3bc-8621-4616-9ba9-2c695cea049a)
+
 
 
 ## Installation
@@ -31,14 +32,14 @@ Adjust the configuration file as necessary, then run migrations.
 
 `That's it! You are now ready to add nested comments
 
-## Usage
+## Usage: Comments
 At the very basic level, this package is simply a Livewire Component that takes in a model record which is commentable. Follow the following steps to prepare your model to be commentable or reactable:
 1. Add the `HasComments` trait to your model
 ```php
 
 use Coolsam\NestedComments\Traits\HasComments;
 
-class Post extends Model
+class Conference extends Model
 {
     use HasComments;
 
@@ -50,14 +51,14 @@ class Post extends Model
 ```php
 use Coolsam\NestedComments\Traits\HasReactions;
 
-class Post extends Model
+class Conference extends Model
 {
     use HasReactions;
 
     // ...
 }
 ```
-3. You can now access the comments and reactions of your model using the following methods:
+3. You can now access the comments and reactions of your model in the following ways
 
 ### Using the Comments Infolist Entry
 
@@ -76,13 +77,19 @@ public static function infolist(Infolist $infolist): Infolist
                         TextEntry::make('created_at')
                             ->dateTime(),
                     ]),
-
+                
+                // Add the comments entry
                 \Coolsam\NestedComments\Filament\Infolists\CommentsEntry::make('comments'),
             ]);
     }
 ```
+![image](https://github.com/user-attachments/assets/da84b49e-66c7-4453-b5d4-b7b18f204bba)
 
-### Using the Comments Widget inside a Resource Page (e.g EditRecord) which has the $record property
+
+
+### Using the Comments Widget inside a Resource Page (e.g EditRecord)
+
+As long as the resource page interacts with the record, the CommentsWidget will resolve the record automatically.
 
 ```php
 class EditConference extends EditRecord
@@ -105,6 +112,7 @@ class EditConference extends EditRecord
     }
 }
 ```
+![image](https://github.com/user-attachments/assets/bd56d52d-b791-4f24-a202-b0948574d811)
 
 ### Using the Comments Widget in a custom Filament Page (You have to pass $record manually)
 
@@ -149,6 +157,10 @@ class ViewConference extends ViewRecord
     }
 }
 ```
+![image](https://github.com/user-attachments/assets/678d3f1e-b3f9-4a77-b263-af5538c72e2b)
+
+![image](https://github.com/user-attachments/assets/372c6390-ea4e-4d19-8943-784506126cc1)
+
 ### Using the Comments Page Action in a custom Filament Page (You have to pass $record manually)
 In this case you will have to pass the record attribute manually.
 
@@ -183,6 +195,8 @@ public static function table(Table $table): Table
         ]);
 }
 ```
+![image](https://github.com/user-attachments/assets/27eead51-c237-4865-b185-3245629cabe4)
+
 ### Using the Comments Blade Component ANYWHERE!
 This unlocks incredible possibilities. It allows you to render your comments even in your own frontend blade page. All you have to do is simply pass the commentable `$record` to the blade component
 ```php
