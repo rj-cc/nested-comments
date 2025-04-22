@@ -209,6 +209,11 @@ $record = Conference::find(1); // Get your record from the database then,
 <livewire:nested-comments::comments :record="$record"/>
 ```
 
+### Mentions
+The package uses Filament TipTap Editor which supports mentions. You can mention users in your comments by typing `@` followed by the user's name. The package will automatically resolve the user and send them a notification.
+You can customize how to fetch mentions by changing the `.closures.getMentionsUsing` closure in the config file. Two sample methods have been included in the main class for getting all users in the DB or only users that have been mentioned in the current thread (default). Customize this however you wish.
+
+
 ## Usage: Emoji Reactions
 This package also allows you to add emoji reactions to your models. You can use the `HasReactions` trait to add reactions to any model. The reactions are stored in a separate table, and you can customize the reactions that are available via the configuration file.
 The Comments model that powers the comments feature described above already uses emoji reactions.
@@ -299,6 +304,8 @@ In your view:
 The two components can be used anywhere, in resource pages, custom pages, actions, form fields, widgets, livewire components or just plain blade views. Here is a sample screenshot of how the components will be rendered:
 ![image](https://github.com/user-attachments/assets/4926c3c6-e679-4713-a6e6-c4f17da4f85a)
 
+## Package Customization
+You can customize the package by changing most of the default values in the config file after publishing it.
 
 ## Testing
 
