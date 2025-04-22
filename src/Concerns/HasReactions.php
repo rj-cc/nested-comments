@@ -32,18 +32,20 @@ trait HasReactions
         });
     }
 
-    public function getEmojiReactors()
+    public function getEmojiReactorsAttribute()
     {
-        return $this->reactions()->get(['id', 'emoji', 'user_id', 'guest_id'])->groupBy('emoji')->map(function ($item) {
-            return $item->map(function ($reaction) {
-                return [
-                    'id' => $reaction->getKey(),
-                    'user_id' => $reaction->getAttribute('user_id'),
-                    'guest_id' => $reaction->getAttribute('guest_id'),
-                    'name' => $reaction->getAttribute('user_id') ? call_user_func(config('nested-comments.closures.getUserNameUsing'), $reaction->getAttribute('user')) : $reaction->getAttribute('guest_name'),
-                ];
+        return $this->reactions()->get(['id', 'emoji', 'user_id', 'guest_id', 'guest_name'])
+            ->groupBy('emoji')
+            ->map(function (Collection $item) {
+                return $item->map(function ($reaction) {
+                    return [
+                        'id' => $reaction->getKey(),
+                        'user_id' => $reaction->getAttribute('user_id'),
+                        'guest_id' => $reaction->getAttribute('guest_id'),
+                        'name' => $reaction->getAttribute('user_id') ? call_user_func(config('nested-comments.closures.getUserNameUsing'), $reaction->getAttribute('user')) : $reaction->getAttribute('guest_name'),
+                    ];
+                });
             });
-        });
     }
 
     public function getMyReactionsAttribute(): array
