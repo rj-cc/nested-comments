@@ -1,11 +1,10 @@
-# Add Nested comments/replies to filament forms, infolists and resources
+# Filament Nested Comments & Emoji Reactions
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/coolsam/nested-comments.svg?style=flat-square)](https://packagist.org/packages/coolsam/nested-comments)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/coolsam726/nested-comments/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/coolsam726/nested-comments/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/coolsam726/nested-comments/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/coolsam726/nested-comments/actions?query=workflow%3A"Fix+PHP+Code+Styling"+branch%3Amain)
 [![GitHub PHPStan Action Status](https://img.shields.io/github/actions/workflow/status/coolsam726/nested-comments/phpstan.yml?branch=main&label=phpstan&style=flat-square)](https://github.com/coolsam726/nested-comments/actions?query=workflow%3APHPStan+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/coolsam/nested-comments.svg?style=flat-square)](https://packagist.org/packages/coolsam/nested-comments)
-
 
 
 This package allows you to incorporate comments and replies in your Filament forms, infolists, pages, widgets etc, or even simply in your livewire components. Comment replies can be nested as deep as you want, using the Nested Set data structure. Additionally, the package comes with a Reactions feature to enable your users to react to any of your models (e.g comments or posts) with selected emoji reactions.
@@ -210,12 +209,110 @@ $record = Conference::find(1); // Get your record from the database then,
 <livewire:nested-comments::comments :record="$record"/>
 ```
 
+## Usage: Emoji Reactions
+This package also allows you to add emoji reactions to your models. You can use the `HasReactions` trait to add reactions to any model. The reactions are stored in a separate table, and you can customize the reactions that are available via the configuration file.
+The Comments model that powers the comments feature described above already uses emoji reactions.
+
+In order to start using reactions for your model, add the `HasReactions` trait to your model. You can then use the `reactions` method to get the reactions for the model.
+
+```php
+use Coolsam\NestedComments\Traits\HasReactions;
+
+class Conference extends Model
+{
+    use HasReactions;
+
+    // ...
+}
+```
+The above trait adds the `react()` method to your model, allowing you to toggle a reaction for the model. You can also use the `reactions` method to get the reactions for the model.
+
+```php
+$conference = Conference::find(1);
+$comference->react('👍'); // React to the conference with a thumbs up emoji
+```
+You can also use the `reactions` method to get the reactions for the model.
+
+```php
+$conference = Conference::find(1);
+$reactions = $conference->reactions; // Get the reactions for the conference
+```
+Other useful methods include
+```php
+/**
+* @var \Illuminate\Database\Eloquent\Model&\Coolsam\NestedComments\Concerns\HasReactions $conference
+ */
+$conference = Conference::find(1);
+$conference->total_reactions; // Get the total number of reactions for the conference
+$conference->reactions_counts; // Get the no of reactions for each emoji for the model
+$conference->my_reactions; // Get the reactions for the current user
+$conference->emoji_reactors // Get the list of users who reacted to the model, grouped by emoji
+$conference->isAllowed('👍') // check if the app allows the user to react with the specified emoji
+$conference->reactions_map // return the map of all the reactions for the model, grouped by emoji. This tells you the number of reactions for each emoji, and whether the current user has reacted with that emoji
+```
+To interact with the methods above with ease within and even outside Filament, this package comes with the following handy components:
+
+### Reactions Infolist Entry
+```php
+use Coolsam\NestedComments\Filament\Infolists\ReactionsEntry;
+
+public static function infolist(Infolist $infolist): Infolist
+{
+    return $infolist
+        ->schema([
+            Section::make('Basic Details')
+                ->schema([
+                    TextEntry::make('name'),
+                    TextEntry::make('start_date')
+                        ->dateTime(),
+                    TextEntry::make('end_date')
+                        ->dateTime(),
+                    TextEntry::make('created_at')
+                        ->dateTime(),
+                        // Add the reactions entry
+                    ReactionsEntry::make('reactions')->columnSpanFull(),
+                ])->columns(4),
+        ]);
+}
+```
+### Reactions Blade Component
+Just include the blade component anywhere in your blade file and pass the model record to it.
+```php
+$record = Conference::find(1); // Get your record from the database then,
+```
+In your view:
+```bladehtml
+<x-nested-comments::reactions :record="$record"/>
+```
+
+### Reactions Livewire Component
+Similar to the blade component, you can use the Livewire component anywhere in your Livewire component and pass the model record to it.
+```php
+$record = Conference::find(1); // Get your record from the database then,
+```
+In your view:
+```bladehtml
+<livewire:nested-comments::reaction-panel :record="$record"/>
+```
 
 ## Testing
 
 ```bash
 composer test
 ```
+
+## Open Source Dependencies
+
+This package uses the following awesome open source packages, among many others under the hood:
+
+* [Filament](https://filamentphp.com/)
+* [Livewire](https://livewire.laravel.com/)
+* [Laravel](https://laravel.com/)
+* [AlpineJS](https://alpinejs.dev/)
+* [Laravel NestedSet](https://github.com/lazychaser/laravel-nestedset)
+* [Filament Tiptap Editor](https://github.com/awcodes/filament-tiptap-editor)
+
+I am grateful for the work that has been put into these packages. They have made it possible to build this package in a short time.
 
 ## Changelog
 
