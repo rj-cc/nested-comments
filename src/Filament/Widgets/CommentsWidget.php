@@ -12,7 +12,7 @@ class CommentsWidget extends Widget
     /**
      * @var view-string
      */
-    protected static string $view = 'nested-comments::filament.widgets.comments-widget';
+    protected static string $view = /** @var view-string */ 'nested-comments::filament.widgets.comments-widget';
 
     protected int | string | array $columnSpan = 'full';
 }

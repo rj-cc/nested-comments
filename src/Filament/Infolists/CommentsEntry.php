@@ -12,7 +12,7 @@ class CommentsEntry extends Entry
     /**
      * @var view-string
      */
-    protected string $view = 'nested-comments::filament.infolists.comments-entry';
+    protected string $view = /** @var view-string */ 'nested-comments::filament.infolists.comments-entry';
 
     protected array $columnSpan = ['default' => 'full'];
 }
