@@ -275,6 +275,8 @@ public static function infolist(Infolist $infolist): Infolist
         ]);
 }
 ```
+![image](https://github.com/user-attachments/assets/06ae7e76-1668-4e92-9a4f-a125f7d94b03)
+
 ### Reactions Blade Component
 Just include the blade component anywhere in your blade file and pass the model record to it.
 ```php
@@ -294,6 +296,9 @@ In your view:
 ```bladehtml
 <livewire:nested-comments::reaction-panel :record="$record"/>
 ```
+The two components can be used anywhere, in resource pages, custom pages, actions, form fields, widgets, livewire components or just plain blade views. Here is a sample screenshot of how the components will be rendered:
+![image](https://github.com/user-attachments/assets/4926c3c6-e679-4713-a6e6-c4f17da4f85a)
+
 
 ## Testing
 
