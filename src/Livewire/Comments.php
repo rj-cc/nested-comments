@@ -25,10 +25,16 @@ class Comments extends Component
      * @var Collection<Comment>
      */
     public Collection $comments;
+    public ?\Closure $getMentionsUsing = null;
+    public ?\Closure $getUserAvatarUsing = null;
+    public ?\Closure $getUserNameUsing = null;
 
-    public function mount(): void
+    public function mount(?\Closure $getMentionsUsing = null, ?\Closure $getUserAvatarUsing=null, ?\Closure $getUserNameUsing = null): void
     {
         $this->comments = collect();
+        $this->getMentionsUsing = $getMentionsUsing;
+        $this->getUserAvatarUsing = $getUserAvatarUsing ?? fn ($user) => app(NestedComments::class)->getDefaultUserAvatar($user);
+        $this->getUserNameUsing = $getUserNameUsing ?? config('nested-comments.closures.getUserNameUsing', fn ($user) => $user->getAttribute('name'));
         if (! $this->record) {
             throw new \Error('Record model (Commentable) is required');
         }

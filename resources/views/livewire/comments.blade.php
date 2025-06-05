@@ -17,7 +17,10 @@
     @foreach($this->comments as $comment)
         <livewire:nested-comments::comment-card
                 :key="$comment->getKey()"
-                :comment="$comment" />
+                :comment="$comment"
+                :get-user-name-using="$this->getUserNameUsing"
+                :get-user-avatar-using="$this->getUserAvatarUsing"
+        />
     @endforeach
-    <livewire:nested-comments::add-comment :commentable="$this->record" />
+    <livewire:nested-comments::add-comment :commentable="$this->record" :get-mentions-using="$this->getMentionsUsing" />
 </x-filament::section>

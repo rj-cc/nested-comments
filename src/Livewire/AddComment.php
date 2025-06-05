@@ -30,13 +30,16 @@ class AddComment extends Component implements HasForms
 
     public ?Comment $replyTo = null;
 
-    public function mount(?Model $commentable = null, ?Comment $replyTo = null): void
+    public ?\Closure $getMentionsUsing;
+
+    public function mount(?Model $commentable, ?Comment $replyTo, ?\Closure $getMentionsUsing): void
     {
         if (! $commentable) {
             throw new \Error('The $commentable property is required.');
         }
         $this->commentable = $commentable;
         $this->replyTo = $replyTo;
+        $this->getMentionsUsing = $getMentionsUsing;
         $this->form->fill();
     }
 
@@ -51,7 +54,7 @@ class AddComment extends Component implements HasForms
 
     public function form(Form $form): Form
     {
-        $mentionsClosure = config('nested-comments.closures.getMentionsUsing', fn (string $query, Model $commentable) => app(NestedComments::class)->getUserMentions($query));
+        $mentionsClosure = $this->getMentionsUsing ?? fn (string $query, Model $commentable) => app(NestedComments::class)->getUserMentions($query);
 
         return $form
             ->schema([

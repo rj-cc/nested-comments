@@ -4,14 +4,14 @@
             <div x-data="{showFullDate: false}" class="flex items-center space-x-2">
                 <x-filament::avatar
                         :src="$this->getAvatar()"
-                        :alt="$this->comment->commentator"
-                        :name="$this->comment->commentator"
+                        :alt="$this->getCommentator()"
+                        :name="$this->getCommentator()"
                         size="md"
                         :circular="false"
                 />
                 <div x-on:mouseover="showFullDate = true" x-on:mouseout="showFullDate = false" class="cursor-pointer">
                     <p class="text-sm font-semibold text-gray-900 dark:text-white">
-                        {{ $this->comment->commentator }}
+                        {{ $this->getCommentator() }}
                     </p>
                     <p x-show="!showFullDate"
                        class="text-xs text-gray-500 dark:text-gray-400">

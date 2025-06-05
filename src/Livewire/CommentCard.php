@@ -12,17 +12,24 @@ class CommentCard extends Component
 
     public bool $showReplies = false;
 
+    public ?\Closure $getUserNameUsing = null;
+
+    public ?\Closure $getUserAvatarUsing = null;
+
     protected $listeners = [
         'refresh' => 'refreshReplies',
     ];
 
-    public function mount(?Comment $comment = null): void
+    public function mount(?Comment $comment = null, ?\Closure $getUserNameUsing = null, ?\Closure $getUserAvatarUsing = null): void
     {
         if (! $comment) {
             throw new \Error('The $comment property is required.');
         }
 
         $this->comment = $comment;
+
+        $this->getUserNameUsing = $getUserNameUsing ?? fn ($user) => $user->getAttribute('name');
+        $this->getUserAvatarUsing = $getUserAvatarUsing ?? fn ($user) => app(\Coolsam\NestedComments\NestedComments::class)->getDefaultUserAvatar($user);
     }
 
     public function render()
@@ -48,6 +55,18 @@ class CommentCard extends Component
             return '';
         }
 
-        return call_user_func(config('nested-comments.closures.getUserAvatarUsing'), $this->comment->commentator);
+        return call_user_func($this->getUserAvatarUsing, $this->comment->commentator);
+    }
+
+    public function getCommentator(): string
+    {
+        if (! $this->comment) {
+            return '';
+        }
+        if (! $this->comment->user) {
+            return $this->comment->getAttribute('guest_name') ?? 'Guest';
+        }
+
+        return call_user_func($this->getUserNameUsing, $this->comment->user);
     }
 }
