@@ -24,6 +24,11 @@ Run the installation command and follow the prompts:
 ```bash
 php artisan nested-comments:install
 ```
+During the installation, you will be asked if you would like to publish and replace the config file.
+This is important especially if you are upgrading the package to a newer version in which the config file structure has changed.
+No worries, if you have customizations in your config file that you would like to keep, your current config file will be backed up to `config/nested-comments.php.bak` before the new config file is published.
+
+You will also be asked if you would like to re-publish the package's assets. This is also important in case the package's styles and scripts have changed in the new version.
 
 Adjust the configuration file as necessary, then run migrations.
 
@@ -210,8 +215,9 @@ $record = Conference::find(1); // Get your record from the database then,
 ```
 
 ### Mentions
-The package uses Filament TipTap Editor which supports mentions. You can mention users in your comments by typing `@` followed by the user's name. The package will automatically resolve the user and send them a notification.
-You can customize how to fetch mentions by changing the `.closures.getMentionsUsing` closure in the config file. Two sample methods have been included in the main class for getting all users in the DB or only users that have been mentioned in the current thread (default). Customize this however you wish.
+The package uses Filament TipTap Editor which supports mentions. You can mention users in your comments by typing `@` followed by the user's name.
+In the future, the package will support sending notifications to the mentioned users via database notifications if supported.
+For more on how to customize the mentions, see the [Package Customization](#customize-how-to-get-the-mention-items) section below.
 
 **Get only users mentioned in the current thread:**
 
@@ -327,7 +333,70 @@ The two components can be used anywhere, in resource pages, custom pages, action
 
 ## Package Customization
 You can customize the package by changing most of the default values in the config file after publishing it.
+Additionally, you can customize how the package interacts with your models by overriding some methods in your commentable model.
 
+### Customize how to get the Comment Author's Name
+You can customize how to get the comment author's name by overriding the `getUserName` method in your commentable model.
+By default, the package uses the `name` attribute of the user model, but you can change this to any other attribute or method that returns a string.
+
+This name will be displayed in the comment card, and it will also be used to mention the user in the comment text.
+
+```php
+// e.g in your Post model or any other model that uses the HasComments trait
+use Coolsam\NestedComments\Traits\HasComments;
+
+public function getUserName(Model|Authenticatable|null $user): string
+{
+    return $user?->getAttribute('username') ?? $user?->getAttribute('guest_name') ?? 'Guest';
+}
+```
+
+### Customize the User's Avatar
+You can customize the user's avatar by overriding the `getUserAvatar` method in your commentable model.
+
+By default, the package uses [ui-avatars](https://ui-avatars.com) to generate the avatar based on the user's name, but you can change this to any other method that returns a URL to the user's avatar image.
+
+```php
+// e.g in your Post model or any other model that uses the HasComments trait
+use Coolsam\NestedComments\Traits\HasComments;
+
+public function getUserAvatar(Model|Authenticatable|string|null $user): ?string
+{
+//    return 'https://yourprofile.url.png';
+    return $user->getAttribute('profile_url') // get your user's profile url here, assuming you have defined it in your user's model.
+}
+```
+
+### Customize how to get the Mention Items
+You can customize how to get the mention items by overriding and changing the `getMentionsQuery` method in your commentable model.
+By default, the package gets mention items from all users in your database. 
+For example, if you would only like to mention users who have commented on the current thread, you can do so by changing the method to return only those users.
+There is a handy method included in the default class to achieve this. Alternatively, you can go wild and mention fruits instead of users! The choice is within your freedom.
+
+```php
+// e.g in your Post model or any other model that uses the HasComments trait
+use Coolsam\NestedComments\Traits\HasComments;
+
+public function getMentionsQuery(string $query): Builder
+{
+    return app(NestedComments::class)->getCurrentThreadUsersQuery($query, $this);
+}
+```
+
+### Customize the Supported Emoji Reactions
+You can customize the supported emoji reactions by changing the `reactions` array in the config file.
+Decent defaults are provided, but you can change them to any emojis you prefer.
+
+```php
+return [
+    '👍',
+    '❤️',
+    '😂',
+    '😮',
+    '😢',
+    '😡',
+];
+```
 ## Testing
 
 ```bash

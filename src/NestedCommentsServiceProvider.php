@@ -25,6 +25,8 @@ use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
+use function Laravel\Prompts\confirm;
+
 class NestedCommentsServiceProvider extends PackageServiceProvider
 {
     public static string $name = 'nested-comments';
@@ -44,14 +46,20 @@ class NestedCommentsServiceProvider extends PackageServiceProvider
                 $command
                     ->startWith(function (Command $command) {
                         $command->comment('Publishing config file...');
-                        $forceConfig = $command->confirm(__('Do you want to override existing config file?'), false);
-                        Artisan::call('vendor:publish', [
-                            '--tag' => 'nested-comments-config',
-                            '--force' => $forceConfig,
-                        ]);
-                        $command->info('Config file published successfully.');
+                        if (confirm(__('Do you want to publish and overwrite the config file? (The existing file will be backed up to .bak)'))) {
+                            // check if the config file exists and back it up by copying to .bak
+                            if (file_exists(config_path('nested-comments.php'))) {
+                                $command->info('Backing up existing config to .bak file');
+                                // copy the config file to .bak
+                                copy(config_path('nested-comments.php'), config_path('nested-comments.php.bak'));
+                            }
+                            $command->call('vendor:publish', [
+                                '--tag' => 'nested-comments-config',
+                                '--force' => true,
+                            ]);
+                        }
 
-                        $forceAssets = $command->confirm(__('Do you want to override existing assets with new assets?'), true);
+                        $forceAssets = confirm(__('Do you want to override existing assets with new assets? (important if you are doing an upgrade)'), true);
                         if ($forceAssets) {
                             // Delete the existing assets in public/css/coolsam and public/js/coolsam
                             $filesystem = app(Filesystem::class);
@@ -60,6 +68,7 @@ class NestedCommentsServiceProvider extends PackageServiceProvider
                             Artisan::call('filament:assets');
                         }
                     })
+                    ->publishConfigFile()
                     ->publishAssets()
                     ->publishMigrations()
                     ->askToRunMigrations()
