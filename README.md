@@ -219,24 +219,6 @@ The package uses Filament TipTap Editor which supports mentions. You can mention
 In the future, the package will support sending notifications to the mentioned users via database notifications if supported.
 For more on how to customize the mentions, see the [Package Customization](#customize-how-to-get-the-mention-items) section below.
 
-**Get only users mentioned in the current thread:**
-
-```php
-[
-    'getMentionsUsing' => fn (
-            string $query,
-            Model $commentable
-        ) => app(\Coolsam\NestedComments\NestedComments::class)->getCurrentThreadUsers($query, $commentable),
-]
-```
-
-**Get all users from your database**
-
-```php
-[
-    'getMentionsUsing' => 'getMentionsUsing' => fn (string $query, Model $commentable) => app(\Coolsam\NestedComments\NestedComments::class)->getUserMentions($query),
-]
-```
 ![image](https://github.com/user-attachments/assets/bd7a395a-fc32-4057-b6bc-24763132f555)
 
 
