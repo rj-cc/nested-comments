@@ -7,6 +7,7 @@ use Filament\Support\Facades\FilamentColor;
 use FilamentTiptapEditor\Data\MentionItem;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
@@ -100,7 +101,7 @@ class NestedComments
             })->toArray();
     }
 
-    public function getUserMentionsQuery(string $query): \Illuminate\Database\Eloquent\Builder
+    public function getUserMentionsQuery(string $query): Builder
     {
         $userModel = config('nested-comments.models.user', config('auth.providers.users.model', 'App\\Models\\User'));
 
@@ -109,7 +110,22 @@ class NestedComments
             ->orWhere('email', 'like', "%{$query}%");
     }
 
-    public function getCurrentThreadUsers(string $searchQuery, $commentable): mixed
+    public function getCurrentThreadUsers(string $searchQuery, $commentable): array
+    {
+        return $this->getCurrentThreadUsersQuery($searchQuery, $commentable)
+            ->take(20)
+            ->get()
+            ->map(function ($user) {
+                return new MentionItem(
+                    id: $user->getKey(),
+                    label: $this->getUserName($user),
+                    image: $this->getDefaultUserAvatar($user),
+                    roundedImage: true,
+                );
+            })->toArray();
+    }
+
+    public function getCurrentThreadUsersQuery(string $searchQuery, $commentable): Builder
     {
         $userModel = config('nested-comments.models.user', config('auth.providers.users.model', 'App\\Models\\User'));
         $ids = [];
@@ -123,17 +139,7 @@ class NestedComments
                 fn ($q) => $q
                     ->where('name', 'like', "%{$searchQuery}%")
                     ->orWhere('email', 'like', "%{$searchQuery}%")
-            )
-            ->take(20)
-            ->get()
-            ->map(function ($user) {
-                return new MentionItem(
-                    id: $user->getKey(),
-                    label: $this->getUserName($user),
-                    image: $this->getDefaultUserAvatar($user),
-                    roundedImage: true,
-                );
-            })->toArray();
+            );
     }
 
     public function renderCommentsComponent(Model $record): \Illuminate\Contracts\View\View | Application | Factory | View
