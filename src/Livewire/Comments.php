@@ -25,16 +25,23 @@ class Comments extends Component
      * @var Collection<Comment>
      */
     public Collection $comments;
+
     public ?\Closure $getMentionsUsing = null;
+
     public ?\Closure $getUserAvatarUsing = null;
+
     public ?\Closure $getUserNameUsing = null;
 
-    public function mount(?\Closure $getMentionsUsing = null, ?\Closure $getUserAvatarUsing=null, ?\Closure $getUserNameUsing = null): void
+    public function mount(
+        \Closure|null $getMentionsUsing = null,
+        \Closure|null $getUserAvatarUsing = null,
+        \Closure|null $getUserNameUsing = null): void
     {
         $this->comments = collect();
         $this->getMentionsUsing = $getMentionsUsing;
-        $this->getUserAvatarUsing = $getUserAvatarUsing ?? fn ($user) => app(NestedComments::class)->getDefaultUserAvatar($user);
-        $this->getUserNameUsing = $getUserNameUsing ?? config('nested-comments.closures.getUserNameUsing', fn ($user) => $user->getAttribute('name'));
+        $this->getUserAvatarUsing = $getUserAvatarUsing;
+        $this->getUserNameUsing = $getUserNameUsing;
+
         if (! $this->record) {
             throw new \Error('Record model (Commentable) is required');
         }
@@ -59,5 +66,20 @@ class Comments extends Component
         $namespace = NestedCommentsServiceProvider::$viewNamespace;
 
         return view($namespace . '::livewire.comments');
+    }
+
+    public function getMentionsUsingClosure()
+    {
+        return $this->getMentionsUsing;
+    }
+
+    public function getUserAvatarUsingClosure()
+    {
+        return $this->getUserAvatarUsing;
+    }
+
+    public function getUserNameUsingClosure()
+    {
+        return $this->getUserNameUsing;
     }
 }

@@ -4,32 +4,33 @@ namespace Coolsam\NestedComments\Livewire;
 
 use Coolsam\NestedComments\Models\Comment;
 use Coolsam\NestedComments\NestedCommentsServiceProvider;
+use Error;
+use Filament\Support\Concerns\EvaluatesClosures;
 use Livewire\Component;
 
 class CommentCard extends Component
 {
+    use EvaluatesClosures;
+
     public ?Comment $comment = null;
 
     public bool $showReplies = false;
 
-    public ?\Closure $getUserNameUsing = null;
+    public ?string $userAvatar = null;
 
-    public ?\Closure $getUserAvatarUsing = null;
+    public ?string $userName = null;
 
     protected $listeners = [
         'refresh' => 'refreshReplies',
     ];
 
-    public function mount(?Comment $comment = null, ?\Closure $getUserNameUsing = null, ?\Closure $getUserAvatarUsing = null): void
+    public function mount(?Comment $comment = null): void
     {
         if (! $comment) {
-            throw new \Error('The $comment property is required.');
+            throw new Error('The $comment property is required.');
         }
 
         $this->comment = $comment;
-
-        $this->getUserNameUsing = $getUserNameUsing ?? fn ($user) => $user->getAttribute('name');
-        $this->getUserAvatarUsing = $getUserAvatarUsing ?? fn ($user) => app(\Coolsam\NestedComments\NestedComments::class)->getDefaultUserAvatar($user);
     }
 
     public function render()
@@ -55,7 +56,7 @@ class CommentCard extends Component
             return '';
         }
 
-        return call_user_func($this->getUserAvatarUsing, $this->comment->commentator);
+        return $this->userAvatar ?? '';
     }
 
     public function getCommentator(): string
@@ -63,10 +64,11 @@ class CommentCard extends Component
         if (! $this->comment) {
             return '';
         }
+
         if (! $this->comment->user) {
             return $this->comment->getAttribute('guest_name') ?? 'Guest';
         }
 
-        return call_user_func($this->getUserNameUsing, $this->comment->user);
+        return $this->userName ?? 'Guest';
     }
 }

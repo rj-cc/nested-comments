@@ -25,13 +25,15 @@ class NestedComments
         return session(self::GUEST_ID_FIELD);
     }
 
+    public function getUserName(Authenticatable | Model | null $user): string
+    {
+        return $user?->getAttribute('name') ?? 'Guest';
+    }
+
     public function getGuestName(): string
     {
         if (Auth::check()) {
-            return call_user_func(config(
-                'nested-comments.closures.getUserNameUsing',
-                fn (Authenticatable | Model $user) => $user->getAttribute('name')
-            ), Auth::user());
+            return $this->getUserName(Auth::user());
         }
 
         return session(self::GUEST_NAME_FIELD, 'Guest');
@@ -66,7 +68,7 @@ class NestedComments
         return in_array($trait, class_uses_recursive($classInstance));
     }
 
-    public function geDefaultUserAvatar(Authenticatable | Model | string $user)
+    public function getDefaultUserAvatar(Authenticatable | Model | string $user)
     {
         if (is_string($user)) {
             $name = str($user)
@@ -95,8 +97,8 @@ class NestedComments
             ->map(function ($user) {
                 return new MentionItem(
                     id: $user->getKey(),
-                    label: call_user_func(config('nested-comments.closures.getUserNameUsing'), $user),
-                    image: call_user_func(config('nested-comments.closures.getUserAvatarUsing'), $user),
+                    label: $this->getGuestName($user),
+                    image: $this->getDefaultUserAvatar($user),
                     roundedImage: true,
                 );
             })->toArray();
@@ -122,8 +124,8 @@ class NestedComments
             ->map(function ($user) {
                 return new MentionItem(
                     id: $user->getKey(),
-                    label: call_user_func(config('nested-comments.closures.getUserNameUsing'), $user),
-                    image: call_user_func(config('nested-comments.closures.getUserAvatarUsing'), $user),
+                    label: $this->getUserName($user),
+                    image: $this->getDefaultUserAvatar($user),
                     roundedImage: true,
                 );
             })->toArray();

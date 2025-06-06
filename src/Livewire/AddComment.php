@@ -2,9 +2,12 @@
 
 namespace Coolsam\NestedComments\Livewire;
 
+use Closure;
 use Coolsam\NestedComments\Models\Comment;
 use Coolsam\NestedComments\NestedComments;
 use Coolsam\NestedComments\NestedCommentsServiceProvider;
+use Error;
+use Exception;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
@@ -30,23 +33,22 @@ class AddComment extends Component implements HasForms
 
     public ?Comment $replyTo = null;
 
-    public ?\Closure $getMentionsUsing;
+    public ?Closure $getMentionsUsing = null;
 
-    public function mount(?Model $commentable, ?Comment $replyTo, ?\Closure $getMentionsUsing): void
+    public function mount(?Model $commentable, ?Comment $replyTo): void
     {
         if (! $commentable) {
-            throw new \Error('The $commentable property is required.');
+            throw new Error('The $commentable property is required.');
         }
         $this->commentable = $commentable;
         $this->replyTo = $replyTo;
-        $this->getMentionsUsing = $getMentionsUsing;
         $this->form->fill();
     }
 
     public function getCommentable(): Model
     {
         if (! $this->commentable) {
-            throw new \Error('The $commentable property is required.');
+            throw new Error('The $commentable property is required.');
         }
 
         return $this->commentable;
@@ -54,8 +56,6 @@ class AddComment extends Component implements HasForms
 
     public function form(Form $form): Form
     {
-        $mentionsClosure = $this->getMentionsUsing ?? fn (string $query, Model $commentable) => app(NestedComments::class)->getUserMentions($query);
-
         return $form
             ->schema([
                 TiptapEditor::make('body')
@@ -64,7 +64,8 @@ class AddComment extends Component implements HasForms
                     ->extraInputAttributes(['style' => 'min-height: 12rem;'])
                     ->mentionItemsPlaceholder(config('nested-comments.mentions.items-placeholder', __('Search users by name or email address')))
                     ->emptyMentionItemsMessage(config('nested-comments.mentions.empty-items-message', __('No users found')))
-                    ->getMentionItemsUsing(fn (string $query) => $mentionsClosure($query, $this->getCommentable()))
+                    ->getMentionItemsUsing(fn (string $query) => app(NestedComments::class)->getUserMentions($query))
+                    ->maxContentWidth('full')
                     ->required()
                     ->autofocus(),
             ])
@@ -73,7 +74,7 @@ class AddComment extends Component implements HasForms
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function create(): void
     {

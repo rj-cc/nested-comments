@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 
 return [
@@ -36,17 +35,6 @@ return [
     'allow-multiple-reactions' => env('ALLOW_MULTIPLE_REACTIONS', false), // Allow multiple reactions from the same user
     'allow-guest-reactions' => env('ALLOW_GUEST_REACTIONS', false), // Allow guest users to react
     'allow-guest-comments' => env('ALLOW_GUEST_COMMENTS', false), // Allow guest users to comment
-    'closures' => [
-        'getUserNameUsing' => fn (Authenticatable | Model $user) => $user->getAttribute('name'),
-        'getUserAvatarUsing' => fn (
-            Authenticatable | Model | string $user
-        ) => app(\Coolsam\NestedComments\NestedComments::class)->geDefaultUserAvatar($user),
-        //        'getMentionsUsing' => fn (string $query) => app(\Coolsam\NestedComments\NestedComments::class)->getUserMentions($query), // Get mentions of all users in the DB
-        'getMentionsUsing' => fn (
-            string $query,
-            Model $commentable
-        ) => app(\Coolsam\NestedComments\NestedComments::class)->getCurrentThreadUsers($query, $commentable),
-    ],
     'mentions' => [
         'items-placeholder' => 'Search users by name or email address',
         'empty-items-message' => 'No users found',
