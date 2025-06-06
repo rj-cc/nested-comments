@@ -26,21 +26,9 @@ class Comments extends Component
      */
     public Collection $comments;
 
-    public ?\Closure $getMentionsUsing = null;
-
-    public ?\Closure $getUserAvatarUsing = null;
-
-    public ?\Closure $getUserNameUsing = null;
-
-    public function mount(
-        \Closure|null $getMentionsUsing = null,
-        \Closure|null $getUserAvatarUsing = null,
-        \Closure|null $getUserNameUsing = null): void
+    public function mount(): void
     {
         $this->comments = collect();
-        $this->getMentionsUsing = $getMentionsUsing;
-        $this->getUserAvatarUsing = $getUserAvatarUsing;
-        $this->getUserNameUsing = $getUserNameUsing;
 
         if (! $this->record) {
             throw new \Error('Record model (Commentable) is required');
@@ -66,20 +54,5 @@ class Comments extends Component
         $namespace = NestedCommentsServiceProvider::$viewNamespace;
 
         return view($namespace . '::livewire.comments');
-    }
-
-    public function getMentionsUsingClosure()
-    {
-        return $this->getMentionsUsing;
-    }
-
-    public function getUserAvatarUsingClosure()
-    {
-        return $this->getUserAvatarUsing;
-    }
-
-    public function getUserNameUsingClosure()
-    {
-        return $this->getUserNameUsing;
     }
 }

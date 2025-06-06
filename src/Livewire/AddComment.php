@@ -2,9 +2,8 @@
 
 namespace Coolsam\NestedComments\Livewire;
 
-use Closure;
+use Coolsam\NestedComments\Concerns\HasComments;
 use Coolsam\NestedComments\Models\Comment;
-use Coolsam\NestedComments\NestedComments;
 use Coolsam\NestedComments\NestedCommentsServiceProvider;
 use Error;
 use Exception;
@@ -33,8 +32,6 @@ class AddComment extends Component implements HasForms
 
     public ?Comment $replyTo = null;
 
-    public ?Closure $getMentionsUsing = null;
-
     public function mount(?Model $commentable, ?Comment $replyTo): void
     {
         if (! $commentable) {
@@ -56,6 +53,13 @@ class AddComment extends Component implements HasForms
 
     public function form(Form $form): Form
     {
+        /**
+         * @var Model<HasComments>|HasComments $commentable
+         *
+         * @phpstan-ignore-next-line
+         */
+        $commentable = $this->getCommentable();
+
         return $form
             ->schema([
                 TiptapEditor::make('body')
@@ -64,7 +68,10 @@ class AddComment extends Component implements HasForms
                     ->extraInputAttributes(['style' => 'min-height: 12rem;'])
                     ->mentionItemsPlaceholder(config('nested-comments.mentions.items-placeholder', __('Search users by name or email address')))
                     ->emptyMentionItemsMessage(config('nested-comments.mentions.empty-items-message', __('No users found')))
-                    ->getMentionItemsUsing(fn (string $query) => app(NestedComments::class)->getUserMentions($query))
+                    /**
+                     * @phpstan-ignore-next-line
+                     */
+                    ->getMentionItemsUsing(fn (string $query) => $commentable->getMentionsUsing($query))
                     ->maxContentWidth('full')
                     ->required()
                     ->autofocus(),
@@ -80,6 +87,11 @@ class AddComment extends Component implements HasForms
     {
         $data = $this->form->getState();
 
+        /**
+         * @var Model<HasComments>|HasComments $commentable
+         *
+         * @phpstan-ignore-next-line
+         */
         $commentable = $this->getCommentable();
 
         /**

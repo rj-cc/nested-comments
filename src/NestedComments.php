@@ -27,7 +27,7 @@ class NestedComments
 
     public function getUserName(Authenticatable | Model | null $user): string
     {
-        return $user?->getAttribute('name') ?? 'Guest';
+        return $user?->getAttribute('name') ?? $user?->getAttribute('guest_name') ?? 'Guest';
     }
 
     public function getGuestName(): string
@@ -85,23 +85,28 @@ class NestedComments
         }
     }
 
-    public function getUserMentions(string $query)
+    public function getUserMentions(string $query): array
     {
-        $userModel = config('nested-comments.models.user', config('auth.providers.users.model', 'App\\Models\\User'));
-
-        return $userModel::query()
-            ->where('name', 'like', "%{$query}%")
-            ->orWhere('email', 'like', "%{$query}%")
+        return $this->getUserMentionsQuery($query)
             ->take(20)
             ->get()
             ->map(function ($user) {
                 return new MentionItem(
                     id: $user->getKey(),
-                    label: $this->getGuestName($user),
+                    label: $this->getUserName($user),
                     image: $this->getDefaultUserAvatar($user),
                     roundedImage: true,
                 );
             })->toArray();
+    }
+
+    public function getUserMentionsQuery(string $query): \Illuminate\Database\Eloquent\Builder
+    {
+        $userModel = config('nested-comments.models.user', config('auth.providers.users.model', 'App\\Models\\User'));
+
+        return $userModel::query()
+            ->where('name', 'like', "%{$query}%")
+            ->orWhere('email', 'like', "%{$query}%");
     }
 
     public function getCurrentThreadUsers(string $searchQuery, $commentable): mixed

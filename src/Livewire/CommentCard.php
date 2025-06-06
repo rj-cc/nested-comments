@@ -56,7 +56,10 @@ class CommentCard extends Component
             return '';
         }
 
-        return $this->userAvatar ?? '';
+        /**
+         * @phpstan-ignore-next-line
+         */
+        return $this->comment->commentable?->getUserAvatarUsing($this->comment);
     }
 
     public function getCommentator(): string
@@ -65,10 +68,9 @@ class CommentCard extends Component
             return '';
         }
 
-        if (! $this->comment->user) {
-            return $this->comment->getAttribute('guest_name') ?? 'Guest';
-        }
-
-        return $this->userName ?? 'Guest';
+        /**
+         * @phpstan-ignore-next-line
+         */
+        return $this->comment->commentable?->getUserNameUsing($this->comment);
     }
 }

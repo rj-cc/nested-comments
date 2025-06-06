@@ -18,9 +18,7 @@
         <livewire:nested-comments::comment-card
                 :key="$comment->getKey()"
                 :comment="$comment"
-                :get-user-name-using="$this->getUserNameUsingClosure()"
-                :get-user-avatar-using="$this->getUserAvatarUsingClosure()"
         />
     @endforeach
-    <livewire:nested-comments::add-comment :commentable="$this->record" :get-mentions-using="$this->getMentionsUsingClosure()" />
+    <livewire:nested-comments::add-comment :commentable="$this->record" />
 </x-filament::section>
