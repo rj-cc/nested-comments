@@ -17,7 +17,8 @@
     @foreach($this->comments as $comment)
         <livewire:nested-comments::comment-card
                 :key="$comment->getKey()"
-                :comment="$comment" />
+                :comment="$comment"
+        />
     @endforeach
     <livewire:nested-comments::add-comment :commentable="$this->record" />
 </x-filament::section>

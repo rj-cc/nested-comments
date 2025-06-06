@@ -4,13 +4,21 @@ namespace Coolsam\NestedComments\Livewire;
 
 use Coolsam\NestedComments\Models\Comment;
 use Coolsam\NestedComments\NestedCommentsServiceProvider;
+use Error;
+use Filament\Support\Concerns\EvaluatesClosures;
 use Livewire\Component;
 
 class CommentCard extends Component
 {
+    use EvaluatesClosures;
+
     public ?Comment $comment = null;
 
     public bool $showReplies = false;
+
+    public ?string $userAvatar = null;
+
+    public ?string $userName = null;
 
     protected $listeners = [
         'refresh' => 'refreshReplies',
@@ -19,7 +27,7 @@ class CommentCard extends Component
     public function mount(?Comment $comment = null): void
     {
         if (! $comment) {
-            throw new \Error('The $comment property is required.');
+            throw new Error('The $comment property is required.');
         }
 
         $this->comment = $comment;
@@ -48,6 +56,21 @@ class CommentCard extends Component
             return '';
         }
 
-        return call_user_func(config('nested-comments.closures.getUserAvatarUsing'), $this->comment->commentator);
+        /**
+         * @phpstan-ignore-next-line
+         */
+        return $this->comment->commentable?->getUserAvatarUsing($this->comment);
+    }
+
+    public function getCommentator(): string
+    {
+        if (! $this->comment) {
+            return '';
+        }
+
+        /**
+         * @phpstan-ignore-next-line
+         */
+        return $this->comment->commentable?->getUserNameUsing($this->comment);
     }
 }

@@ -5,9 +5,14 @@ namespace Coolsam\NestedComments\Concerns;
 use Coolsam\NestedComments\Models\Comment;
 use Coolsam\NestedComments\NestedComments;
 use Exception;
+use FilamentTiptapEditor\Data\MentionItem;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
+
+use function auth;
 
 /**
  * @mixin Model
@@ -97,7 +102,7 @@ trait HasComments
             app(NestedComments::class)->setGuestName($name);
         }
 
-        if (\auth()->check() && $comment->getAttribute('user_id') !== auth()->id()) {
+        if (auth()->check() && $comment->getAttribute('user_id') !== auth()->id()) {
             throw new Exception('You are not authorized to edit this comment.');
         }
 
@@ -123,7 +128,7 @@ trait HasComments
             throw new Exception('You must be logged in to edit your comment.');
         }
 
-        if (\auth()->check() && $comment->getAttribute('user_id') !== auth()->id()) {
+        if (auth()->check() && $comment->getAttribute('user_id') !== auth()->id()) {
             throw new Exception('You are not authorized to edit this comment.');
         }
 
@@ -135,5 +140,51 @@ trait HasComments
         }
 
         return $comment->delete();
+    }
+
+    final public function getUserNameUsing(Comment $comment): string
+    {
+        return $this->getUserName($comment->getAttribute('user'));
+    }
+
+    final public function getUserAvatarUsing(Comment $comment): ?string
+    {
+        $user = $comment->user ?? $comment->guest_name ?? 'Guest';
+
+        return $this->getUserAvatar($user);
+    }
+
+    public function getUserName(Model | Authenticatable | null $user): string
+    {
+        return app(NestedComments::class)->getUserName($user);
+    }
+
+    public function getUserAvatar(Model | Authenticatable | string | null $user): ?string
+    {
+        return app(NestedComments::class)->getDefaultUserAvatar($user);
+    }
+
+    /**
+     * @return array<int, MentionItem>
+     */
+    public function getMentionsUsing(string $query): array
+    {
+        return $this->getMentionsQuery($query)
+//            ->where('username', 'like', "%{$query}%")
+            ->take(50)
+            ->get()
+            ->map(function ($user) {
+                return new MentionItem(
+                    id: $user->getKey(),
+                    label: $this->getUserName($user),
+                    image: $this->getUserAvatar($user),
+                    roundedImage: true,
+                );
+            })->toArray();
+    }
+
+    public function getMentionsQuery(string $query): Builder
+    {
+        return app(NestedComments::class)->getUserMentionsQuery($query);
     }
 }

@@ -29,6 +29,7 @@ class Comments extends Component
     public function mount(): void
     {
         $this->comments = collect();
+
         if (! $this->record) {
             throw new \Error('Record model (Commentable) is required');
         }
