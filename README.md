@@ -39,7 +39,7 @@ At the very basic level, this package is simply a Livewire Component that takes 
 1. Add the `HasComments` trait to your model
 ```php
 
-use Coolsam\NestedComments\Traits\HasComments;
+use Coolsam\NestedComments\Concerns\HasComments;
 
 class Conference extends Model
 {
@@ -51,7 +51,7 @@ class Conference extends Model
 ```
 2. If you would like to be able to react to your model directly as well, add the `HasReactions` trait to your model
 ```php
-use Coolsam\NestedComments\Traits\HasReactions;
+use Coolsam\NestedComments\Concerns\HasReactions;
 
 class Conference extends Model
 {
@@ -229,7 +229,7 @@ The Comments model that powers the comments feature described above already uses
 In order to start using reactions for your model, add the `HasReactions` trait to your model. You can then use the `reactions` method to get the reactions for the model.
 
 ```php
-use Coolsam\NestedComments\Traits\HasReactions;
+use Coolsam\NestedComments\Concerns\HasReactions;
 
 class Conference extends Model
 {
@@ -325,7 +325,7 @@ This name will be displayed in the comment card, and it will also be used to men
 
 ```php
 // e.g in your Post model or any other model that uses the HasComments trait
-use Coolsam\NestedComments\Traits\HasComments;
+use Coolsam\NestedComments\Concerns\HasComments;
 
 public function getUserName(Model|Authenticatable|null $user): string
 {
@@ -340,7 +340,7 @@ By default, the package uses [ui-avatars](https://ui-avatars.com) to generate th
 
 ```php
 // e.g in your Post model or any other model that uses the HasComments trait
-use Coolsam\NestedComments\Traits\HasComments;
+use Coolsam\NestedComments\Concerns\HasComments;
 
 public function getUserAvatar(Model|Authenticatable|string|null $user): ?string
 {
@@ -357,7 +357,7 @@ There is a handy method included in the default class to achieve this. Alternati
 
 ```php
 // e.g in your Post model or any other model that uses the HasComments trait
-use Coolsam\NestedComments\Traits\HasComments;
+use Coolsam\NestedComments\Concerns\HasComments;
 
 public function getMentionsQuery(string $query): Builder
 {
