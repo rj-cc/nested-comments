@@ -63,11 +63,11 @@ class AddComment extends Component implements HasForms
         return $form
             ->schema([
                 TiptapEditor::make('body')
-                    ->label(__('Your comment'))
+                    ->label(__('nested-comments::nested-comments.comments.form.field.comment.label'))
                     ->profile('minimal')
                     ->extraInputAttributes(['style' => 'min-height: 12rem;'])
-                    ->mentionItemsPlaceholder(config('nested-comments.mentions.items-placeholder', __('Search users by name or email address')))
-                    ->emptyMentionItemsMessage(config('nested-comments.mentions.empty-items-message', __('No users found')))
+                    ->mentionItemsPlaceholder(__('nested-comments::nested-comments.comments.form.field.comment.mention_items_placeholder'))
+                    ->emptyMentionItemsMessage(__('nested-comments::nested-comments.comments.form.field.comment.empty_mention_items_message'))
                     /**
                      * @phpstan-ignore-next-line
                      */

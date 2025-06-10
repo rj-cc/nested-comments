@@ -6,6 +6,7 @@
                     'font-light' => true,
                 ])
                 title="{{$reaction}} {{collect($attribs)->get('reactions')}} {{str(collect($attribs)->get('name'))->plural(collect($attribs)->get('reactions'))}}"
+                tooltip="{{$reaction}} {{collect($attribs)->get('reactions')}} {{str(collect($attribs)->get('name'))->plural(collect($attribs)->get('reactions'))}}"
                 :outlined="true"
                 :color="collect($attribs)->get('meToo') ? 'primary' : 'gray'" size="xs"
         >
@@ -14,7 +15,7 @@
     @endforeach
     <x-filament::dropdown placement="bottom-start">
         <x-slot name="trigger">
-            <x-filament::button outlined color="gray" badge="+" size="xs" title="Add reaction">
+            <x-filament::button outlined color="gray" badge="+" size="xs" title="{{ __('nested-comments::nested-comments.reactions.add_reaction') }}" tooltip="{{ __('nested-comments::nested-comments.reactions.add_reaction') }}">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                      stroke="currentColor" class="size-4">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -29,7 +30,10 @@
                         @class([
                             'font-light' => true,
                         ])
-                        :outlined="true" :color="collect($attribs)->get('meToo') ? 'primary' : 'gray'" size="md" title="{{collect($attribs)->get('name')}}"
+                        :outlined="true"
+                        :color="collect($attribs)->get('meToo') ? 'primary' : 'gray'"
+                        size="md"
+                        title="{{collect($attribs)->get('name')}}"
                 >
                     <span class="text-lg">{{$reaction}}</span>
                 </x-filament::button>
@@ -37,10 +41,3 @@
             </div>
         </x-filament::dropdown>
 </div>
-@script
-<script>
-    function addReaction(reaction) {
-      console.log('About to add a reaction:', reaction);
-    }
-</script>
-@endscript

@@ -14,9 +14,9 @@ class CommentsAction extends Action
         parent::setUp();
         $this->modalWidth('4xl')
             ->slideOver()
-            ->modalHeading(fn (): string => __('View Comments'));
+            ->modalHeading(fn (): string => __('nested-comments::nested-comments.comments.actions.view_comment.heading'));
         $this->modalSubmitAction(false);
-        $this->modalCancelActionLabel(__('Close'));
+        $this->modalCancelActionLabel(__('nested-comments::nested-comments.comments.actions.view_comment.close'));
         $this->icon('heroicon-o-chat-bubble-left-right');
         $this->modalIcon('heroicon-o-chat-bubble-left-right');
     }

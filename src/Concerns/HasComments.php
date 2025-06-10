@@ -125,17 +125,17 @@ trait HasComments
         $allowGuest = config('nested-comments.allow-guest-comments', false);
 
         if (! auth()->check() && ! $allowGuest) {
-            throw new Exception('You must be logged in to edit your comment.');
+            throw new Exception('You must be logged in to delete your comment.');
         }
 
         if (auth()->check() && $comment->getAttribute('user_id') !== auth()->id()) {
-            throw new Exception('You are not authorized to edit this comment.');
+            throw new Exception('You are not authorized to delete this comment.');
         }
 
         if ($allowGuest && ! auth()->check()) {
             $guestId = app(NestedComments::class)->getGuestId();
             if ($comment->getAttribute('guest_id') !== $guestId) {
-                throw new Exception('You are not authorized to edit this comment.');
+                throw new Exception('You are not authorized to delete this comment.');
             }
         }
 
@@ -149,7 +149,7 @@ trait HasComments
 
     final public function getUserAvatarUsing(Comment $comment): ?string
     {
-        $user = $comment->user ?? $comment->guest_name ?? 'Guest';
+        $user = $comment->user ?? $comment->guest_name ?? __('nested-comments::nested-comments.comments.general.guest');
 
         return $this->getUserAvatar($user);
     }
