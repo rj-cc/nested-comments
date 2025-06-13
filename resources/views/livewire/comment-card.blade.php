@@ -19,7 +19,7 @@
                     </p>
                     <p x-show="showFullDate"
                        class="text-xs text-gray-500 dark:text-gray-400"
-                    >{{ $this->comment->created_at->format('F j Y h:i:s A') }}</p>
+                    >{{ $this->comment->created_at->format(config('nested-comments.format-created-date', 'F j Y h:i:s A')) }}</p>
                 </div>
             </div>
         </div>
@@ -34,11 +34,11 @@
                     wire:click.prevent="toggleReplies">
                 @if($this->comment->replies_count > 0)
                     <span title="{{ \Illuminate\Support\Number::format($this->comment->replies_count) }}">
-                        {{\Illuminate\Support\Number::forHumans($this->comment->replies_count, maxPrecision: 3, abbreviate: true)}} {{ str('Reply')->plural($this->comment->replies_count) }}
+                        {{\Illuminate\Support\Number::forHumans($this->comment->replies_count, maxPrecision: 3, abbreviate: true)}} {{ str(__('nested-comments::nested-comments.comments.general.reply'))->plural($this->comment->replies_count) }}
                     </span>
                 @else
-                    <span title="{{__('No replies yet')}}">
-                        Reply
+                    <span title="{{ __('nested-comments::nested-comments.comments.general.no_replies') }}">
+                        {{ __('nested-comments::nested-comments.comments.form.buttons.reply') }}
                     </span>
                 @endif
             </x-filament::link>
@@ -67,7 +67,7 @@
                         }
                     "
                     type="button"
-                    label="Hide replies" icon="heroicon-o-minus-circle" class="absolute -left-8 -bottom-4" wire:click.prevent="toggleReplies"/>
+                    label="{{ __('nested-comments::nested-comments.comments.form.buttons.hide_replies') }}" tooltip="{{ __('nested-comments::nested-comments.comments.form.buttons.hide_replies') }}" icon="heroicon-o-minus-circle" class="absolute -left-8 -bottom-4" wire:click.prevent="toggleReplies"/>
         </div>
     @endif
 </div>

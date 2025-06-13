@@ -47,7 +47,7 @@ class CommentCardEntry extends Entry
         return $this->evaluate($this->userAvatarUsingClosure
             ?? fn (Comment | Model $record) => app(NestedComments::class)
                 ->getDefaultUserAvatar($record->getAttribute('user')
-                    ?? $record->getAttribute('guest_name') ?? 'Guest'));
+                    ?? $record->getAttribute('guest_name') ?? __('nested-comments::nested-comments.comments.general.guest')));
     }
 
     public function evaluateUserName(): ?string

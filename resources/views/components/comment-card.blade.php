@@ -8,6 +8,6 @@
 />
     @else
     <p class="text-gray-500 dark:text-gray-400">
-        {{ __('No comment provided.') }}
+        {{ __('nested-comments::nested-comments.comments.general.no_comments_provided') }}
     </p>
 @endif

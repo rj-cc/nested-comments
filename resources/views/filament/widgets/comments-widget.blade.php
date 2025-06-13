@@ -3,7 +3,7 @@
         <livewire:nested-comments::comments :record="$this->record" />
     @else
         <x-filament::section>
-            No Commentable record found. Please pass a record to the widget.
+            {{ __('nested-comments::nested-comments.comments.general.no_commentable_record_found_widget') }}
         </x-filament::section>
     @endif
 </x-filament-widgets::widget>

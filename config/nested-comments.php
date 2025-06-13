@@ -35,8 +35,22 @@ return [
     'allow-multiple-reactions' => env('ALLOW_MULTIPLE_REACTIONS', false), // Allow multiple reactions from the same user
     'allow-guest-reactions' => env('ALLOW_GUEST_REACTIONS', false), // Allow guest users to react
     'allow-guest-comments' => env('ALLOW_GUEST_COMMENTS', false), // Allow guest users to comment
-    'mentions' => [
-        'items-placeholder' => 'Search users by name or email address',
-        'empty-items-message' => 'No users found',
-    ],
+
+    'format-created-date' => 'F j Y h:i:s A',
+    /*
+    |--------------------------------------------------------------------------
+    | Livewire Component
+    |--------------------------------------------------------------------------
+    |
+    */
+    'show-heading' => true,
+
+    'show-badge-counter' => true,
+    'badge-counter-color' => 'info',
+
+    'show-refresh-button' => true,
+    'style-refresh-button' => 'button', // 'button' or 'icon',
+    'icon-refresh-button' => 'heroicon-m-sparkles',
+    'outlined-refresh-button' => false,
+    'color-refresh-button' => 'info' // 'danger', 'gray', 'info', 'success' or 'warning'
 ];

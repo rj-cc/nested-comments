@@ -28,7 +28,7 @@ class NestedComments
 
     public function getUserName(Authenticatable | Model | null $user): string
     {
-        return $user?->getAttribute('name') ?? $user?->getAttribute('guest_name') ?? 'Guest';
+        return $user?->getAttribute('name') ?? $user?->getAttribute('guest_name') ?? __('nested-comments::nested-comments.comments.general.guest');
     }
 
     public function getGuestName(): string
@@ -37,7 +37,7 @@ class NestedComments
             return $this->getUserName(Auth::user());
         }
 
-        return session(self::GUEST_NAME_FIELD, 'Guest');
+        return session(self::GUEST_NAME_FIELD, __('nested-comments::nested-comments.comments.general.guest'));
     }
 
     public function setGuestName(string $name): void
@@ -58,7 +58,7 @@ class NestedComments
     public function setOrGetGuestName()
     {
         if (! session()->has(self::GUEST_NAME_FIELD)) {
-            session([self::GUEST_NAME_FIELD => 'Guest']);
+            session([self::GUEST_NAME_FIELD => __('nested-comments::nested-comments.comments.general.guest')]);
         }
 
         return session(self::GUEST_NAME_FIELD);
